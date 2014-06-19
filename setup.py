@@ -13,7 +13,7 @@ setup(
         'django_pesapal'
     ],
     include_package_data=True,
-    license='Beer License',  # example license
+    license='Beer-ware License',
     description='A django port for pesapal payment gateway.',
     long_description=README,
     url='http://www.example.com/',
@@ -27,7 +27,7 @@ setup(
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License', # example license
+        'License :: OSI Approved :: Beer-ware License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         # Replace these appropriately if you are stuck on Python 2.
