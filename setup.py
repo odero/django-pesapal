@@ -21,6 +21,7 @@ setup(
     author_email='billz@xx.com',
     install_requires=[
         'Django>=1.5.4',
+        'oauth2',
     ],
     classifiers=[
         'Environment :: Web Environment',
