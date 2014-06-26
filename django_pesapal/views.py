@@ -1,16 +1,18 @@
 # Create your views here.
 
-from django.shortcuts import redirect
-from django.conf import settings
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import RedirectView
+from django.db.models.loading import get_model
 
 from .models import Transaction
+
+import conf
 
 
 class TransactionCompletedView(RedirectView):
     permanent = False
-    url = settings.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL
+    url = reverse_lazy(conf.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
 
     def get(self, request, *args, **kwargs):
         '''
@@ -23,6 +25,6 @@ class TransactionCompletedView(RedirectView):
         merchant_reference = request.GET.get('pesapal_merchant_reference', '')
 
         if transaction_id and merchant_reference:
-            Transaction.objects.get_or_create(transaction_id=transaction_id, merchant_reference=merchant_reference)
+            transaction, created = Transaction.objects.get_or_create(pk=merchant_reference, pesapal_transaction_id=transaction_id)
 
         return super(TransactionCompletedView, self).get(request, *args, **kwargs)
