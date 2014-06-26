@@ -1,11 +1,15 @@
 
-from . import settings
+from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
 
 import oauth2 as oauth
 # from xml.etree.cElementTree import XML, Element
 # import xml.etree.cElementTree as ctree
 import cgi
 # import requests
+
+
+import conf as settings
 
 DEFAULT_TYPE = "MERCHANT"
 
@@ -15,9 +19,11 @@ def get_signed_request(payload):
     Returns a signed OAuth request
     '''
     token = None
+    current_site = Site.objects.get_current()
+    callback_url = 'http://{0}{1}'.format(current_site.domain, reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
 
     params = {
-        'oauth_callback': settings.PESAPAL_OAUTH_CALLBACK_URL,
+        'oauth_callback': callback_url,
         'pesapal_request_data': payload
     }
 
