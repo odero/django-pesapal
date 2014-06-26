@@ -23,6 +23,9 @@ setup(
         'Django>=1.5.4',
         'oauth2',
     ],
+    dependency_links=[
+        "https://github.com/odero/django-uuidfield/archive/master.zip#egg=django-uuidfield==0.5.0",
+    ],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
