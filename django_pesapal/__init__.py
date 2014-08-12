@@ -14,13 +14,18 @@ import conf as settings
 DEFAULT_TYPE = "MERCHANT"
 
 
-def get_signed_request(payload):
+def get_signed_request(request, payload):
     '''
-    Returns a signed OAuth request
+    Returns a signed OAuth request. Assumes http protocol if request parameter is not provided.
+    Otherwise it tries to figure out the url using the request object.
     '''
     token = None
-    current_site = Site.objects.get_current()
-    callback_url = 'http://{0}{1}'.format(current_site.domain, reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
+
+    if request:
+        callback_url = request.build_absolute_uri(reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
+    else:
+        current_site = Site.objects.get_current()
+        callback_url = 'http://{0}{1}'.format(current_site.domain, reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
 
     params = {
         'oauth_callback': callback_url,
@@ -87,7 +92,7 @@ def generate_payload(**kwargs):
     return pesapal_request_data
 
 
-def get_payment_url(**kwargs):
+def get_payment_url(request=None, **kwargs):
     '''
     Use the computed order information to generate a url for the Pesapal iframe.
 
@@ -102,5 +107,5 @@ def get_payment_url(**kwargs):
     payload = generate_payload(**kwargs)
 
     # generate iframe url
-    signed_request = get_signed_request(payload)
+    signed_request = get_signed_request(request, payload)
     return signed_request.to_url()
