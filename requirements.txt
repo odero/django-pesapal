@@ -1,0 +1,4 @@
+django>=1.5.1
+wheel==0.23.0
+
+git+git://github.com/odero/django-uuidfield.git#egg=django-uuidfield

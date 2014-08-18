@@ -1,3 +1,4 @@
+__version__ = '1.0.0'
 
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
@@ -38,7 +39,7 @@ def get_signed_request(request, payload):
     consumer = oauth.Consumer(settings.PESAPAL_CONSUMER_KEY, settings.PESAPAL_CONSUMER_SECRET)
     signed_request = oauth.Request.from_consumer_and_token(consumer, http_url=settings.PESAPAL_IFRAME_LINK, parameters=params, is_form_encoded=True)
     signed_request.sign_request(signature_method, consumer, token)
-    # print signed_request.to_url()
+
     return signed_request
 
 

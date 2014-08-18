@@ -1,38 +1,56 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
-from setuptools import setup
+import sys
 
-README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
+import django_pesapal
 
-# allow setup.py to be run from any path
-os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
+version = django_pesapal.__version__
+
+if sys.argv[-1] == 'publish':
+    os.system('python setup.py sdist upload')
+    print("You probably want to also tag the version now:")
+    print("  git tag -a %s -m 'version %s'" % (version, version))
+    print("  git push --tags")
+    sys.exit()
+
+readme = open('README.rst').read()
+history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='django-pesapal',
-    version='0.1.2',
+    version=version,
+    description="""A django port of pesapal payment gateway""",
+    long_description=readme + '\n\n' + history,
+    author='Billy Odero',
+    url='https://github.com/odero/django-pesapal',
     packages=[
-        'django_pesapal'
+        'django_pesapal',
     ],
     include_package_data=True,
-    license='Beer-ware License',
-    description='A django port for pesapal payment gateway.',
-    long_description=README,
-    url='https://github.com/odero/',
-    author='odero',
     install_requires=[
         'Django>=1.5.4',
         'oauth2',
-        # 'django-uuidfield>=0.5.0beta',
     ],
-    # dependency_links=[
-    #     "https://github.com/odero/django-uuidfield/archive/master.zip#egg=django-uuidfield==0.5.0beta",
-    # ],
+    license="BSD",
+    zip_safe=False,
+    keywords='django-pesapal',
     classifiers=[
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Beer-ware License',
+        'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
+        'Natural Language :: English',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
