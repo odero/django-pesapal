@@ -7,4 +7,5 @@ django-nose>=1.2
 flake8>=2.1.0
 tox>=1.7.0
 
-# Additional test requirements go here
+oauth2==1.5.211
+git+git://github.com/odero/django-uuidfield.git#egg=django-uuidfield
