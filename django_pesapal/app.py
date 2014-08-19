@@ -30,7 +30,8 @@ def get_signed_request(request, payload):
         callback_url = request.build_absolute_uri(reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
     else:
         current_site = Site.objects.get_current()
-        callback_url = 'http://{0}{1}'.format(current_site.domain, reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
+        protocol = 'http' if settings.PESAPAL_DEMO else 'https'
+        callback_url = '{0}://{1}{2}'.format(protocol, current_site.domain, reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
 
     params = {
         'oauth_callback': callback_url,
