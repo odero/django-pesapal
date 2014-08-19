@@ -1,5 +1,10 @@
 
-from django.contrib.sites.models import Site
+try:
+    # This will load when settings have been configured
+    from django.contrib.sites.models import Site
+except Exception, e:
+    pass
+
 from django.core.urlresolvers import reverse
 
 import oauth2 as oauth
