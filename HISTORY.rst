@@ -5,6 +5,7 @@ History
 0.1.4 (2014-07-18)
 ++++++++++++++++++
 - Fix import bug. Tests for projects using this fail in Shippable
+- Set max Django version to 1.7
 
 0.1.3 (2014-07-18)
 ++++++++++++++++++
