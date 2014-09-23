@@ -2,10 +2,9 @@
 try:
     # This will load when settings have been configured
     from django.contrib.sites.models import Site
+    from django.core.urlresolvers import reverse
 except Exception, e:
     pass
-
-from django.core.urlresolvers import reverse
 
 import oauth2 as oauth
 # from xml.etree.cElementTree import XML, Element
