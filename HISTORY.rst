@@ -2,7 +2,13 @@
 
 History
 -------
-0.1.4 (2014-07-18)
+0.1.5 (2014-07-25)
+++++++++++++++++++
+- Pin dependencies to specific versions
+- Update how imports should be done
+- Remove imports from __init__.py
+
+0.1.4 (2014-09-23)
 ++++++++++++++++++
 - Fix import bug. Tests for projects using this fail in Shippable
 - Set max Django version to 1.7
