@@ -56,7 +56,7 @@ This is optional. You can set your own return url by adding this to `settings.py
 
 #. Create a method that receives payment details and returns the pesapal iframe url::
 
-    from django_pesapal import get_payment_url
+    from django_pesapal.app import get_payment_url
 
     def get_pesapal_payment_iframe():
         '''
