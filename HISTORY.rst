@@ -2,7 +2,7 @@
 
 History
 -------
-0.1.5 (2014-07-25)
+0.1.5 (2014-09-25)
 ++++++++++++++++++
 - Pin dependencies to specific versions
 - Update how imports should be done
