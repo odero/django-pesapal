@@ -36,7 +36,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'testapp'
 )
+
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -80,3 +82,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Pesapal API configuration
+# Obtain test keys by creating a merchant account here http://demo.pesapal.com/
+
+PESAPAL_DEMO=True
+PESAPAL_CONSUMER_KEY=''
+PESAPAL_CONSUMER_SECRET=''
+if PESAPAL_DEMO:
+    PESAPAL_IFRAME_LINK = 'http://demo.pesapal.com/api/PostPesapalDirectOrderV4'
+else:
+    PESAPAL_IFRAME_LINK = 'https://www.pesapal.com/api/PostPesapalDirectOrderV4'
+PESAPAL_OAUTH_CALLBACK_URL ='transaction_completed'
+PESAPAL_OAUTH_SIGNATURE_METHOD ='SignatureMethod_HMAC_SHA1'
+PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = ''
+PESAPAL_TRANSACTION_FAILED_REDIRECT_URL = ''
