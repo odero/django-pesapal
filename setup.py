@@ -7,7 +7,7 @@ import sys
 import django_pesapal
 
 try:
-    from setuptools import setup
+    from setuptools import setup, find_packages
 except ImportError:
     from distutils.core import setup
 
@@ -30,12 +30,10 @@ setup(
     long_description=readme + '\n\n' + history,
     author='Billy Odero',
     url='https://github.com/odero/django-pesapal',
-    packages=[
-        'django_pesapal',
-    ],
+    packages=find_packages(exclude=['sandbox*']),
     include_package_data=True,
     install_requires=[
-        'Django>=1.5.4,<=1.6.7',
+        'Django>=1.5.4,<=1.6.8',
         'oauth2==1.5.211',
     ],
     license="BSD",
