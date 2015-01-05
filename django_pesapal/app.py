@@ -6,6 +6,7 @@ try:
 except Exception, e:
     pass
 
+import logging
 import oauth2 as oauth
 # from xml.etree.cElementTree import XML, Element
 # import xml.etree.cElementTree as ctree
@@ -17,6 +18,7 @@ import conf as settings
 
 DEFAULT_TYPE = "MERCHANT"
 
+logger = logging.getLogger('django_pesapal')
 
 def get_signed_request(request, payload):
     '''
