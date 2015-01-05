@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from django_pesapal.app import get_payment_url
+from django_pesapal.app import get_payment_url, get_payment_status
 
 
 class PaymentView(TemplateView):
@@ -31,11 +31,15 @@ class ResponseView(TemplateView):
 
     def get(self, request, *args, **kwargs):
             self.transaction_id = kwargs['transaction_id']
-            self.token = kwargs['merchant_reference']
+            self.merchant_reference = kwargs['merchant_reference']
 
             return super(ResponseView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = super(ResponseView, self).get_context_data(**kwargs)
-        ctx['payment_status'] = 'Payment Pending'
+        params = {
+            'pesapal_merchant_reference': self.merchant_reference,
+            'pesapal_transaction_tracking_id': self.transaction_id,
+        }
+        ctx['response'] = get_payment_status(**params)
         return ctx
