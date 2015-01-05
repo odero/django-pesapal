@@ -11,7 +11,8 @@ import oauth2 as oauth
 # from xml.etree.cElementTree import XML, Element
 # import xml.etree.cElementTree as ctree
 import cgi
-# import requests
+import requests
+import time
 
 
 import conf as settings
@@ -116,3 +117,45 @@ def get_payment_url(request=None, **kwargs):
     # generate iframe url
     signed_request = get_signed_request(request, payload)
     return signed_request.to_url()
+
+
+def get_payment_status(**kwargs):
+
+    '''
+    Query the payment status from pesapal using the transaction id and the merchant reference id
+    '''
+
+    params = {
+        'pesapal_merchant_reference': '',
+        'pesapal_transaction_tracking_id': '',
+    }
+
+    params.update(**kwargs)
+
+    signature_method = getattr(oauth, settings.PESAPAL_OAUTH_SIGNATURE_METHOD)()
+
+    consumer = oauth.Consumer(settings.PESAPAL_CONSUMER_KEY, settings.PESAPAL_CONSUMER_SECRET)
+    signed_request = oauth.Request.from_consumer_and_token(consumer, http_url=settings.PESAPAL_QUERY_STATUS_LINK, parameters=params, is_form_encoded=True)
+    signed_request.sign_request(signature_method, consumer, token=None)
+
+    url = signed_request.to_url()
+
+    start_time = time.time()
+    response = requests.get(url, headers={'content-type': 'text/namevalue; charset=utf-8'})
+    if response.status_code != requests.codes.ok:
+        logger.error("Unable to complete payment status request with error response code %s", response.status_code )
+        comm_status = False
+    else:
+        comm_status = True
+
+    response_data = {}
+
+    # !!! Important handle the response if it is not 'OK'
+    response_data['_raw_request'] = url
+    response_data['_raw_response'] = response.text
+    response_data['_comm_success'] = comm_status # communication status
+    response_data['_payment_status'] = response.text.partition('=')[2] # The important detail
+    response_data['_response_time'] = (time.time() - start_time) * 1000.0
+
+    return response_data
+
