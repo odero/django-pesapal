@@ -22,3 +22,20 @@ class PaymentView(TemplateView):
         return ctx
 
 
+
+class ResponseView(TemplateView):
+    """
+        Payment Response View
+    """
+    template_name = 'testapp/response.html'
+
+    def get(self, request, *args, **kwargs):
+            self.transaction_id = kwargs['transaction_id']
+            self.token = kwargs['merchant_reference']
+
+            return super(ResponseView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        ctx = super(ResponseView, self).get_context_data(**kwargs)
+        ctx['payment_status'] = 'Payment Pending'
+        return ctx
