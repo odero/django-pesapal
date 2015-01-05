@@ -123,6 +123,9 @@ def get_payment_status(**kwargs):
 
     '''
     Query the payment status from pesapal using the transaction id and the merchant reference id
+
+    Params should include the following keys:
+        Required params: `pesapal_merchant_reference`, `pesapal_transaction_tracking_id`
     '''
 
     params = {

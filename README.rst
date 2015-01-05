@@ -85,27 +85,43 @@ This is optional. You can set your own return url by adding this to `settings.py
             Optional params: `first_name`, `last_name`
         '''
 
+        `get_payment_url` is defined as::
+
+    def get_payment_status(**kwargs):
+
+        '''
+        Query the payment status from pesapal using the transaction id and the merchant reference id
+
+        Params should include the following keys:
+            Required params: `pesapal_merchant_reference`, `pesapal_transaction_tracking_id`
+        '''
+
+
 Configuration
 =============
 
-+---------------------------------------------+--------------------------------------------------------+
-| Setting                                     | Default Value                                          |
-+=============================================+========================================================+
-| PESAPAL_DEMO                                | True                                                   |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_CONSUMER_KEY                        | ''                                                     |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_CONSUMER_SECRET                     | ''                                                     |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_IFRAME_LINK (if PESAPAL_DEMO=True)  | 'http://demo.pesapal.com/api/PostPesapalDirectOrderV4' |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_IFRAME_LINK (if PESAPAL_DEMO=False) | 'https://www.pesapal.com/api/PostPesapalDirectOrderV4' |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_OAUTH_CALLBACK_URL                  | 'transaction_completed'                                |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_OAUTH_SIGNATURE_METHOD              | 'SignatureMethod_HMAC_SHA1'                            |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL    | ''                                                     |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_TRANSACTION_FAILED_REDIRECT_URL     | ''                                                     |
-+---------------------------------------------+--------------------------------------------------------+
++---------------------------------------------------+--------------------------------------------------------+
+| Setting                                           | Default Value                                          |
++===================================================+========================================================+
+| PESAPAL_DEMO                                      | True                                                   |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_CONSUMER_KEY                              | ''                                                     |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_CONSUMER_SECRET                           | ''                                                     |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_IFRAME_LINK (if PESAPAL_DEMO=True)        | 'http://demo.pesapal.com/api/PostPesapalDirectOrderV4' |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_IFRAME_LINK (if PESAPAL_DEMO=False)       | 'https://www.pesapal.com/api/PostPesapalDirectOrderV4' |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_QUERY_STATUS_LINK (if PESAPAL_DEMO=True)  | 'http://demo.pesapal.com/API/QueryPaymentStatus'       |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_QUERY_STATUS_LINK (if PESAPAL_DEMO=False) | 'https://www.pesapal.com/API/QueryPaymentStatus'       |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_OAUTH_CALLBACK_URL                        | 'transaction_completed'                                |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_OAUTH_SIGNATURE_METHOD                    | 'SignatureMethod_HMAC_SHA1'                            |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL          | ''                                                     |
++---------------------------------------------------+--------------------------------------------------------+
+| PESAPAL_TRANSACTION_FAILED_REDIRECT_URL           | ''                                                     |
++---------------------------------------------------+--------------------------------------------------------+
