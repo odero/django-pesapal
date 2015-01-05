@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
+sys.path.append('..')
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -36,7 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'testapp'
+    'testapp',
+    'django_pesapal'
 )
 
 
@@ -86,14 +89,18 @@ STATIC_URL = '/static/'
 # Pesapal API configuration
 # Obtain test keys by creating a merchant account here http://demo.pesapal.com/
 
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+)
+
 PESAPAL_DEMO=True
-PESAPAL_CONSUMER_KEY=''
-PESAPAL_CONSUMER_SECRET=''
+PESAPAL_CONSUMER_KEY='consumer'
+PESAPAL_CONSUMER_SECRET='greatsecret'
 if PESAPAL_DEMO:
     PESAPAL_IFRAME_LINK = 'http://demo.pesapal.com/api/PostPesapalDirectOrderV4'
 else:
     PESAPAL_IFRAME_LINK = 'https://www.pesapal.com/api/PostPesapalDirectOrderV4'
 PESAPAL_OAUTH_CALLBACK_URL ='transaction_completed'
 PESAPAL_OAUTH_SIGNATURE_METHOD ='SignatureMethod_HMAC_SHA1'
-PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = ''
+PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = 'transaction_status'
 PESAPAL_TRANSACTION_FAILED_REDIRECT_URL = ''
