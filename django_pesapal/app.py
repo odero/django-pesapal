@@ -8,8 +8,7 @@ except Exception, e:
 
 import logging
 import oauth2 as oauth
-# from xml.etree.cElementTree import XML, Element
-# import xml.etree.cElementTree as ctree
+import xml.etree.cElementTree as XmlElement
 import cgi
 import requests
 import time
@@ -61,41 +60,29 @@ def generate_payload(**kwargs):
         'first_name': '',
         'last_name': '',
         'email': '',
+        'lineitems':'',
         'type': DEFAULT_TYPE,
     }
 
     defaults.update(kwargs)
 
-    xml_payload = '''
-    <PesapalDirectOrderInfo
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        Amount="{amount}"
-        Description="{description}"
-        Reference="{reference}"
-        FirstName="{first_name}"
-        LastName="{last_name}"
-        Email="{email}"
-        Type="{type}"
-        xmlns="http://www.pesapal.com"
-    />
-    '''
+    root = XmlElement.Element("PesapalDirectOrderInfo")
+    root.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    root.set("xmlns:xsd","http://www.w3.org/2001/XMLSchema")
+    root.set("Amount", str(defaults['amount']))
+    root.set("Description", defaults['description'])
+    root.set("Reference", str(defaults['reference']))
+    root.set("FirstName", defaults['first_name'])
+    root.set("LastName", defaults['last_name'])
+    root.set("Email", defaults['email'])
+    root.set("Type", defaults['type'])
+    root.set("xmlns", "http://www.pesapal.com")
 
-    xml_payload = xml_payload.format(**defaults)
+    if settings.PESAPAL_ITEM_DESCRIPTION:
+        root.text = defaults['lineitems']
 
-    # Remove whitespace
-    xml_payload = " ".join(xml_payload.split())
-
-    # TODO: Try to build the same with XML to cater for more fields
-    # xml_doc = XML(xml_payload)
-    # xml_doc.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-    # xml_doc.set('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
-    # xml_doc.set('xmlns', 'http://www.pesapal.com')
-
-    # for k,v in defaults.items():
-    #     xml_doc.set(k, str(v))
-
-    # pesapal_request_data = cgi.escape(ctree.tostring(xml_doc))
+    xml_payload = XmlElement.tostring(root, encoding='utf-8', method='xml')
+    logger.error(xml_payload)
     pesapal_request_data = cgi.escape(xml_payload)
     return pesapal_request_data
 
