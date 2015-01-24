@@ -3,6 +3,7 @@ try:
     # This will load when settings have been configured
     from django.contrib.sites.models import Site
     from django.core.urlresolvers import reverse
+    from django.core.exceptions import ImproperlyConfigured
 except Exception, e:
     pass
 
@@ -149,3 +150,15 @@ def get_payment_status(**kwargs):
 
     return response_data
 
+def get_transaction_model():
+    from django.db.models import get_model
+
+    try:
+        app_label, model_name = settings.PESAPAL_TRANSACTION_MODEL.split('.')
+    except ValueError:
+        raise ImproperlyConfigured("PESAPAL_TRANSACTION_MODEL must be of the form 'app_label.model_name'")
+    transaction_model = get_model(app_label, model_name)
+    if transaction_model is None:
+        raise ImproperlyConfigured("PESAPAL_TRANSACTION_MODEL refers to model '%s' that has not been installed" %
+                                   settings.PESAPAL_TRANSACTION_MODEL)
+    return transaction_model

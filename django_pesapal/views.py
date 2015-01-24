@@ -4,10 +4,11 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import RedirectView
 
 
-from .models import Transaction
+from django_pesapal.app import get_transaction_model as Transaction
 
 import conf
 
+# TODO: Do proper exception handling
 
 class TransactionCompletedView(RedirectView):
     permanent = False
@@ -20,11 +21,18 @@ class TransactionCompletedView(RedirectView):
 
         For further processing just create a `post_save` signal on the `Transaction` model.
         '''
-        self.transaction_id = request.GET.get('pesapal_transaction_tracking_id', '')
-        self.merchant_reference = request.GET.get('pesapal_merchant_reference', '')
+        try:
+            self.transaction_id = request.GET.get('pesapal_transaction_tracking_id', '')
+            self.merchant_reference = request.GET.get('pesapal_merchant_reference', '')
+        except KeyError:
+            pass
 
-        if self.transaction_id and self.merchant_reference:
-            transaction = Transaction.objects.get_or_create(merchant_reference=self.merchant_reference, pesapal_transaction=self.transaction_id)
+        try:
+            transaction = Transaction().objects.get(pesapal_merchant_reference=self.merchant_reference)
+            transaction.pesapal_transaction_id = self.transaction_id
+            transaction.save()
+        except:
+            pass
 
         return super(TransactionCompletedView, self).get(request, *args, **kwargs)
 
