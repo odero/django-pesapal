@@ -1,4 +1,4 @@
-django>=1.5.1,<=1.6.7
+django>=1.5.1,<=1.6.8
 coverage
 coveralls
 mock>=1.0.1
@@ -8,4 +8,3 @@ flake8>=2.1.0
 tox>=1.7.0
 
 oauth2==1.5.211
-git+git://github.com/odero/django-uuidfield.git#egg=django-uuidfield
