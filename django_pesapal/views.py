@@ -25,6 +25,6 @@ class TransactionCompletedView(RedirectView):
         merchant_reference = request.GET.get('pesapal_merchant_reference', '')
 
         if transaction_id and merchant_reference:
-            transaction, created = Transaction.objects.get_or_create(pk=merchant_reference, pesapal_transaction_id=transaction_id)
+            transaction, created = Transaction.objects.get_or_create(merchant_reference=merchant_reference, pesapal_transaction=transaction_id)
 
         return super(TransactionCompletedView, self).get(request, *args, **kwargs)
