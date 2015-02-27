@@ -35,8 +35,9 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        'Django>=1.5.4,<=1.6.7',
+        'Django>=1.5.4,<=1.6.8',
         'oauth2==1.5.211',
+        'django-uuidfield==0.5.0'
     ],
     license="BSD",
     zip_safe=False,
