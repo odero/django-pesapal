@@ -30,13 +30,6 @@ Then use it in a project::
     import django_pesapal
 
 
-Note: You'll need to install this fork of `django-uuidfield` first::
-
-    pip install git+git://github.com/odero/django-uuidfield.git#egg=django-uuidfield
-
-For some reason, adding dependncy_links in `setup.py` just isn't working out for me.
-If you can get that working send me a pull request.
-
 #. Add `django_pesapal` to your `INSTALLED_APPS` setting like this::
 
     INSTALLED_APPS = (
@@ -52,7 +45,23 @@ This is optional. You can set your own return url by adding this to `settings.py
 
     PESAPAL_OAUTH_CALLBACK_URL = 'app_name:url_name'  # this needs to be a reversible
 
-#. Run `python manage.py syncdb` to create the polls models.
+The url can have the 'merchant_reference' passed to it as a parameter for further processing.
+Or be without a parameter.
+
+for example the url pattern
+
+r'^response/$'
+
+without the merchant reference parameter
+
+or
+
+r'^response/(?P<merchant_reference>\d+)/$'
+
+when using the parameter
+
+
+#. Run `python manage.py syncdb` to create the models.
 
 #. Create a method that receives payment details and returns the pesapal iframe url::
 
@@ -85,6 +94,26 @@ This is optional. You can set your own return url by adding this to `settings.py
             Optional params: `first_name`, `last_name`
         '''
 
+    `get_payment_status` is used get the payment status and is defined as::
+
+        def get_payment_status(**kwargs):
+
+            '''
+            Query the payment status from pesapal using the transaction id and the merchant reference id
+
+            Params should include the following keys:
+                Required params: `pesapal_merchant_reference`, `pesapal_transaction_tracking_id`
+            '''
+
+
+    It returns a dictionary with the following keys
+
+        response_data['_raw_request']    The params that the request were made with
+        response_data['_raw_response']   Useful for debugging
+        response_data['_comm_success']   A bool communication status
+        response_data['_payment_status'] The payment status
+        response_data['_response_time']  Time taken for the response
+
 Configuration
 =============
 
@@ -101,6 +130,12 @@ Configuration
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_IFRAME_LINK (if PESAPAL_DEMO=False) | 'https://www.pesapal.com/api/PostPesapalDirectOrderV4' |
 +---------------------------------------------+--------------------------------------------------------+
+| PESAPAL_QUERY_STATUS_LINK                   | 'http://demo.pesapal.com/API/QueryPaymentStatus'      |
+| (if PESAPAL_DEMO=True)                      |                                                        |
++---------------------------------------------------+--------------------------------------------------+
+| PESAPAL_QUERY_STATUS_LINK                   | 'https://www.pesapal.com/API/QueryPaymentStatus'      |
+| (if PESAPAL_DEMO=False)                     |                                                        |
++---------------------------------------------------+--------------------------------------------------+
 | PESAPAL_OAUTH_CALLBACK_URL                  | 'transaction_completed'                                |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_OAUTH_SIGNATURE_METHOD              | 'SignatureMethod_HMAC_SHA1'                            |
