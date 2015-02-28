@@ -130,12 +130,10 @@ Configuration
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_IFRAME_LINK (if PESAPAL_DEMO=False) | 'https://www.pesapal.com/api/PostPesapalDirectOrderV4' |
 +---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_QUERY_STATUS_LINK                   | 'http://demo.pesapal.com/API/QueryPaymentStatus'      |
-| (if PESAPAL_DEMO=True)                      |                                                        |
-+---------------------------------------------------+--------------------------------------------------+
-| PESAPAL_QUERY_STATUS_LINK                   | 'https://www.pesapal.com/API/QueryPaymentStatus'      |
-| (if PESAPAL_DEMO=False)                     |                                                        |
-+---------------------------------------------------+--------------------------------------------------+
+| PESAPAL_QUERY_STATUS_LINK (Demo Mode=True)  | 'http://demo.pesapal.com/API/QueryPaymentStatus'       |
++---------------------------------------------+--------------------------------------------------------+
+| PESAPAL_QUERY_STATUS_LINK (Demo Mode=False) | 'https://www.pesapal.com/API/QueryPaymentStatus'       |
++---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_OAUTH_CALLBACK_URL                  | 'transaction_completed'                                |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_OAUTH_SIGNATURE_METHOD              | 'SignatureMethod_HMAC_SHA1'                            |
