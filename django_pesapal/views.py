@@ -1,8 +1,7 @@
 # Create your views here.
-
+import urllib
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.views.generic.base import RedirectView
-from django.core.urlresolvers import NoReverseMatch
 
 from .models import Transaction
 
@@ -30,10 +29,9 @@ class TransactionCompletedView(RedirectView):
         return super(TransactionCompletedView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, *args, **kwargs):
-
-        try:
-            url = reverse(conf.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
-        except NoReverseMatch:
-            url = reverse_lazy(conf.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL,
-                           kwargs={'merchant_reference': self.merchant_reference})
+        '''
+            Reverses the set redirect url and adds a merchant_reference as a GET parameter
+        '''
+        url = reverse_lazy(conf.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
+        url += '?' + urllib.urlencode({'merchant_reference': self.merchant_reference})
         return url
