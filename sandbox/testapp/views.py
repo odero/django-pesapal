@@ -30,7 +30,7 @@ class ResponseView(TemplateView):
     template_name = 'testapp/response.html'
 
     def get(self, request, *args, **kwargs):
-            self.merchant_reference = kwargs['merchant_reference']
+            self.merchant_reference = request.GET.get('merchant_reference', '')
 
             return super(ResponseView, self).get(request, *args, **kwargs)
 
