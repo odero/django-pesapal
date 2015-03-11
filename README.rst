@@ -45,21 +45,15 @@ This is optional. You can set your own return url by adding this to `settings.py
 
     PESAPAL_OAUTH_CALLBACK_URL = 'app_name:url_name'  # this needs to be a reversible
 
-The url can have the 'merchant_reference' passed to it as a parameter for further processing.
-Or be without a parameter.
+The url has the 'merchant_reference' GET parameter which can be extracted for further processing, or ignored.
 
-for example the url pattern
+for example it can be extracted using
 
-r'^response/$'
+self.merchant_reference = request.GET.get('merchant_reference', '')
 
-without the merchant reference parameter
+in the destination view set as the PESAPAL_OAUTH_CALLBACK_URL
 
-or
-
-r'^response/(?P<merchant_reference>\d+)/$'
-
-when using the parameter
-
+self.merchant_reference = request.GET.get('merchant_reference', '')
 
 #. Run `python manage.py syncdb` to create the models.
 
