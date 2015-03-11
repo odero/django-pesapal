@@ -51,9 +51,7 @@ for example it can be extracted using
 
 self.merchant_reference = request.GET.get('merchant_reference', '')
 
-in the destination view set as the PESAPAL_OAUTH_CALLBACK_URL
-
-self.merchant_reference = request.GET.get('merchant_reference', '')
+in the destination view set as the PESAPAL_OAUTH_CALLBACK_URL.
 
 #. Run `python manage.py syncdb` to create the models.
 
