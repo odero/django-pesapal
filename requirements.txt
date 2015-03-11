@@ -2,4 +2,4 @@ django>=1.5.1,<=1.6.8
 wheel==0.23.0
 oauth2==1.5.211
 requests==2.1
-django-uuidfield==0.5.0
+https://github.com/odero/django-uuidfield/archive/0.5.1beta.tar.gz#egg=django-uuidfield
