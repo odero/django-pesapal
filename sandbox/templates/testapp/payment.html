@@ -1,0 +1,9 @@
+{% extends 'testapp/base.html' %}
+{% load i18n %}
+{% block content %}
+    <div>
+        <h3 class="align-center">{% trans "Pesapal Payment details" %}</h3>
+            <iframe width="100%" height="500px" src="{{ pesapal_url }}"></iframe>
+    </div>
+
+{% endblock %}

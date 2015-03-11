@@ -1,0 +1,8 @@
+{% extends 'testapp/base.html' %}
+{% block content %}
+    <div>
+            {% for key, value in response.items %}
+                <p>{{ key }} - {{ value }}</p>
+            {% endfor %}
+    </div>
+{% endblock %}
