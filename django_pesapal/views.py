@@ -2,17 +2,17 @@
 import urllib
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.views.generic.base import RedirectView
-from django.conf import settings
 from django.contrib.sites.models import Site
 
 from .models import Transaction
 
-import logging
+import conf as settings
+
 import oauth2 as oauth
 import cgi
 import requests
 import time
-
+import logging
 
 DEFAULT_TYPE = "MERCHANT"
 
@@ -22,6 +22,8 @@ logger = logging.getLogger(__name__)
 class PaymentRequestMixin(object):
 
     def sign_request(self, params, url_to_sign):
+        token = None
+
         # Default signature method is SignatureMethod_HMAC_SHA1
         signature_method = getattr(oauth, settings.PESAPAL_OAUTH_SIGNATURE_METHOD)()
 
@@ -35,7 +37,6 @@ class PaymentRequestMixin(object):
         Returns a signed OAuth request. Assumes http protocol if request parameter is not provided.
         Otherwise it tries to figure out the url using the request object.
         '''
-        token = None
 
         if self.request:
             callback_url = self.request.build_absolute_uri(reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
