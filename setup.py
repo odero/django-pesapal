@@ -35,13 +35,12 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        'Django>=1.5.4,<=1.6.8',
+        'Django>=1.5.4,<=1.6.10',
         'oauth2==1.5.211',
-        'django-uuidfield'
-
+        'django-uuidfield<=0.6.0',
     ],
     dependency_links=[
-        "https://github.com/odero/django-uuidfield/archive/0.5.1beta.tar.gz#egg=django-uuidfield"
+        "https://github.com/dcramer/django-uuidfield/archive/9bd27e9.zip#egg=django-uuidfield-0.6.0",
     ],
     license="BSD",
     zip_safe=False,
