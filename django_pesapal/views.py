@@ -184,8 +184,10 @@ class TransactionCompletedView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         '''
-            Reverses the set redirect url and adds a merchant_reference as a GET parameter
+        Reverses the set redirect url and adds a merchant_reference as a GET parameter
         '''
-        url = reverse_lazy(conf.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
-        url += '?' + urllib.urlencode({'merchant_reference': self.merchant_reference})
+        url = reverse_lazy(settings.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
+
+        if settings.PESAPAL_REDIRECT_WITH_REFERENCE:
+            url += '?' + urllib.urlencode({'merchant_reference': self.merchant_reference})
         return url
