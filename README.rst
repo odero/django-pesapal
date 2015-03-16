@@ -86,25 +86,25 @@ in the destination view set as the PESAPAL_OAUTH_CALLBACK_URL.
             Optional params: `first_name`, `last_name`
         '''
 
-    `get_payment_status` is used get the payment status and is defined as::
+#. `get_payment_status` is used get the payment status and is defined as::
 
-        def get_payment_status(**kwargs):
+    def get_payment_status(**kwargs):
 
-            '''
-            Query the payment status from pesapal using the transaction id and the merchant reference id
+        '''
+        Query the payment status from pesapal using the transaction id and the merchant reference id
 
-            Params should include the following keys:
-                Required params: `pesapal_merchant_reference`, `pesapal_transaction_tracking_id`
-            '''
+        Params should include the following keys:
+            Required params: `pesapal_merchant_reference`, `pesapal_transaction_tracking_id`
+        '''
 
 
-    It returns a dictionary with the following keys
+    # It returns a dictionary with the following keys
 
-        response_data['_raw_request']    The params that the request were made with
-        response_data['_raw_response']   Useful for debugging
-        response_data['_comm_success']   A bool communication status
-        response_data['_payment_status'] The payment status
-        response_data['_response_time']  Time taken for the response
+        response_data['_raw_request']    # The params that the request were made with
+        response_data['_raw_response']   # Useful for debugging
+        response_data['_comm_success']   # A bool communication status
+        response_data['_payment_status'] # The payment status
+        response_data['_response_time']  # Time taken for the response
 
 Configuration
 =============
@@ -133,4 +133,6 @@ Configuration
 | PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL    | ''                                                     |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_TRANSACTION_FAILED_REDIRECT_URL     | ''                                                     |
++---------------------------------------------+--------------------------------------------------------+
+| PESAPAL_REDIRECT_WITH_REFERENCE             | True                                                   |
 +---------------------------------------------+--------------------------------------------------------+
