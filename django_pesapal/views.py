@@ -49,7 +49,7 @@ class PaymentRequestMixin(object):
             'pesapal_request_data': payload,
         }
 
-        signed_request = self.sign_request(self.request, params, settings.PESAPAL_IFRAME_LINK)
+        signed_request = self.sign_request(params, settings.PESAPAL_IFRAME_LINK)
 
         return signed_request
 
@@ -118,7 +118,7 @@ class PaymentRequestMixin(object):
         payload = self.generate_payload(**kwargs)
 
         # generate iframe url
-        signed_request = self.build_signed_request(self.request, payload)
+        signed_request = self.build_signed_request(payload)
         return signed_request.to_url()
 
 
@@ -138,7 +138,7 @@ class PaymentRequestMixin(object):
 
         params.update(**kwargs)
 
-        signed_request = self.sign_request(self.request, params, settings.PESAPAL_QUERY_STATUS_LINK)
+        signed_request = self.sign_request(params, settings.PESAPAL_QUERY_STATUS_LINK)
 
         url = signed_request.to_url()
 
