@@ -7,6 +7,7 @@ History
 - Support anonymous checkouts
 - Add support for getting payment status
 - Major structural refactoring. Use mixins
+- Use Mixins and XML Builder
 
 0.1.5 (2014-09-25)
 ++++++++++++++++++
