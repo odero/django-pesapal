@@ -10,7 +10,6 @@ from .models import Transaction
 import conf as settings
 
 import oauth2 as oauth
-import cgi
 import requests
 import time
 import logging
@@ -55,7 +54,6 @@ class PaymentRequestMixin(object):
 
         return signed_request
 
-
     def generate_payload(self, **kwargs):
         '''
         Generates the XML payload required by Pesapal
@@ -77,15 +75,14 @@ class PaymentRequestMixin(object):
         xml_doc.set('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
         xml_doc.set('xmlns', 'http://www.pesapal.com')
 
-        for k,v in defaults.items():
+        for k, v in defaults.items():
             # convert keys into pesapal properties format e.g. first_name --> FirstName
             key_items = [str(x).title() for x in k.split('_')]
-            key = ''.join(key_items)
+            k = ''.join(key_items)
             xml_doc.set(k, str(v))
 
-        pesapal_request_data = cgi.escape(ET.tostring(xml_doc))
+        pesapal_request_data = ET.tostring(xml_doc)
         return pesapal_request_data
-
 
     def get_payment_url(self, **kwargs):
         '''
@@ -103,7 +100,6 @@ class PaymentRequestMixin(object):
         # generate iframe url
         signed_request = self.build_signed_request(payload)
         return signed_request.to_url()
-
 
     def get_payment_status(self, **kwargs):
 
@@ -138,8 +134,8 @@ class PaymentRequestMixin(object):
         # !!! Important handle the response if it is not 'OK'
         response_data['_raw_request'] = url
         response_data['_raw_response'] = response.text
-        response_data['_comm_success'] = comm_status # communication status
-        response_data['_payment_status'] = response.text.partition('=')[2] # The important detail
+        response_data['_comm_success'] = comm_status  # communication status
+        response_data['_payment_status'] = response.text.partition('=')[2]  # The important detail
         response_data['_response_time'] = (time.time() - start_time) * 1000.0
 
         return response_data
