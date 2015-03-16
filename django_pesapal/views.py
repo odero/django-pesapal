@@ -3,6 +3,7 @@ import urllib
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.views.generic.base import RedirectView
 from django.contrib.sites.models import Site
+from xml.etree import cElementTree as ET
 
 from .models import Transaction
 
@@ -71,37 +72,18 @@ class PaymentRequestMixin(object):
 
         defaults.update(kwargs)
 
-        xml_payload = '''
-        <PesapalDirectOrderInfo
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            Amount="{amount}"
-            Description="{description}"
-            Reference="{reference}"
-            FirstName="{first_name}"
-            LastName="{last_name}"
-            Email="{email}"
-            Type="{type}"
-            xmlns="http://www.pesapal.com"
-        />
-        '''
+        xml_doc = ET.Element('PesapalDirectOrderInfo')
+        xml_doc.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+        xml_doc.set('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
+        xml_doc.set('xmlns', 'http://www.pesapal.com')
 
-        xml_payload = xml_payload.format(**defaults)
+        for k,v in defaults.items():
+            # convert keys into pesapal properties format e.g. first_name --> FirstName
+            key_items = [str(x).title() for x in k.split('_')]
+            key = ''.join(key_items)
+            xml_doc.set(k, str(v))
 
-        # Remove whitespace
-        xml_payload = " ".join(xml_payload.split())
-
-        # TODO: Try to build the same with XML to cater for more fields
-        # xml_doc = XML(xml_payload)
-        # xml_doc.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-        # xml_doc.set('xmlns:xsd', 'http://www.w3.org/2001/XMLSchema')
-        # xml_doc.set('xmlns', 'http://www.pesapal.com')
-
-        # for k,v in defaults.items():
-        #     xml_doc.set(k, str(v))
-
-        # pesapal_request_data = cgi.escape(ctree.tostring(xml_doc))
-        pesapal_request_data = cgi.escape(xml_payload)
+        pesapal_request_data = cgi.escape(ET.ctree.tostring(xml_doc))
         return pesapal_request_data
 
 
