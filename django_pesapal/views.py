@@ -83,7 +83,7 @@ class PaymentRequestMixin(object):
             key = ''.join(key_items)
             xml_doc.set(k, str(v))
 
-        pesapal_request_data = cgi.escape(ET.ctree.tostring(xml_doc))
+        pesapal_request_data = cgi.escape(ET.tostring(xml_doc))
         return pesapal_request_data
 
 

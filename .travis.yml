@@ -14,3 +14,10 @@ script: coverage run --source django_pesapal runtests.py
 
 # report coverage to coveralls.io
 after_success: coveralls
+branches:
+  only:
+    - master
+notifications:
+    email:
+        on_success: never
+        on_failure: always
