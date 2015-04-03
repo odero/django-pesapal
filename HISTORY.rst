@@ -2,7 +2,13 @@
 
 History
 -------
-0.1.6 (2015-03-17)
+0.2.1 (2015-04-03)
+++++++++++++++++++
+- Added test sandbox
+- Updated Django version
+- Updated django-uuidfield
+
+0.2 (2015-03-17)
 ++++++++++++++++++
 - Support anonymous checkouts
 - Add support for getting payment status
