@@ -1,0 +1,16 @@
+{% extends 'testapp/base.html' %}
+{% block content %}
+  <div>
+    <br>
+    <table>
+      {% for key, value in response.items %}
+        <tr>
+          <td><b>{{ key }}: </b></td>
+          <td>{{ value }}</td>
+        </tr>
+      {% empty %}
+        Maybe you might want to pass <b>merchant_reference</b> to the URL
+      {% endfor %}
+    </table>
+  </div>
+{% endblock %}
