@@ -33,7 +33,7 @@ setup(
     packages=find_packages(exclude=['sandbox*']),
     include_package_data=True,
     install_requires=[
-        'Django>=1.5.4,<=1.6.10',
+        'Django>=1.5.4,<=1.6.11',
         'oauth2==1.5.211',
         'django-uuidfield<=0.6.0',
     ],
@@ -42,7 +42,7 @@ setup(
     ],
     license="BSD",
     zip_safe=False,
-    keywords='django-pesapal',
+    keywords='django-pesapal payment pesapal',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
