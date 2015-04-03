@@ -1,9 +1,9 @@
 from django.views.generic import TemplateView
-from django_pesapal.app import get_payment_url, get_payment_status
+from django_pesapal.views import PaymentRequestMixin
 from django_pesapal.models import Transaction
 
 
-class PaymentView(TemplateView):
+class PaymentView(TemplateView, PaymentRequestMixin):
     """
         Make payment view
     """
@@ -19,11 +19,11 @@ class PaymentView(TemplateView):
             'email': 'pesapal@example.com'
         }
 
-        ctx['pesapal_url'] = get_payment_url(request=self.request, **order_info)
+        ctx['pesapal_url'] = self.get_payment_url(**order_info)
         return ctx
 
 
-class ResponseView(TemplateView):
+class ResponseView(TemplateView, PaymentRequestMixin):
     """
         Payment Response View
     """
@@ -36,13 +36,19 @@ class ResponseView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super(ResponseView, self).get_context_data(**kwargs)
-        txn = Transaction.objects.get(merchant_reference=self.merchant_reference)
-        params = {
-            'pesapal_merchant_reference': txn.merchant_reference,
-            'pesapal_transaction_tracking_id': txn.pesapal_transaction,
-        }
 
-        # The following call should be made asynchronously with something like celery
+        if self.merchant_reference:
+            try:
+                txn = Transaction.objects.get(merchant_reference=self.merchant_reference)
+                params = {
+                    'pesapal_merchant_reference': txn.merchant_reference,
+                    'pesapal_transaction_tracking_id': txn.pesapal_transaction,
+                }
 
-        ctx['response'] = get_payment_status(**params)
+                # In production, the following call should be made asynchronously with something like celery
+                ctx['response'] = self.get_payment_status(**params)
+            except Transaction.DoesNotExist, e:
+                # In production, deal with this dont just print e
+                print e
+
         return ctx
