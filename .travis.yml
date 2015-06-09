@@ -17,6 +17,7 @@ after_success: coveralls
 branches:
   only:
     - master
+    - develop
 notifications:
     email:
         on_success: never
