@@ -5,7 +5,7 @@ from django_pesapal.models import Transaction
 
 class PaymentView(TemplateView, PaymentRequestMixin):
     """
-        Make payment view
+    Make payment view
     """
     template_name = 'testapp/payment.html'
 
@@ -13,7 +13,7 @@ class PaymentView(TemplateView, PaymentRequestMixin):
         ctx = super(PaymentView, self).get_context_data(**kwargs)
 
         order_info = {
-            'amount': 100,
+            'amount': 10,
             'description': 'Payment for X',
             'reference': 2,
             'email': 'pesapal@example.com'
@@ -25,21 +25,18 @@ class PaymentView(TemplateView, PaymentRequestMixin):
 
 class ResponseView(TemplateView, PaymentRequestMixin):
     """
-        Payment Response View
+    Payment Response View
     """
     template_name = 'testapp/response.html'
-
-    def get(self, request, *args, **kwargs):
-            self.merchant_reference = request.GET.get('merchant_reference', '')
-
-            return super(ResponseView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = super(ResponseView, self).get_context_data(**kwargs)
 
-        if self.merchant_reference:
+        merchant_reference = self.request.GET.get('merchant_reference', '')
+
+        if merchant_reference:
             try:
-                txn = Transaction.objects.get(merchant_reference=self.merchant_reference)
+                txn = Transaction.objects.get(merchant_reference=merchant_reference)
                 params = {
                     'pesapal_merchant_reference': txn.merchant_reference,
                     'pesapal_transaction_tracking_id': txn.pesapal_transaction,
