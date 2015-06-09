@@ -1,18 +1,22 @@
-# Create your views here.
-import urllib
-from django.core.urlresolvers import reverse_lazy, reverse
-from django.views.generic.base import RedirectView
+
+from django.contrib import messages
 from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse_lazy, reverse
+from django.shortcuts import get_object_or_404, redirect
+from django.utils.translation import ugettext as _
+from django.views.generic.base import View, RedirectView, TemplateView
+
 from xml.etree import cElementTree as ET
 
-from .models import Transaction
+from models import Transaction
 
 import conf as settings
 
+import logging
 import oauth2 as oauth
 import requests
 import time
-import logging
+import urllib
 
 DEFAULT_TYPE = "MERCHANT"
 
@@ -141,9 +145,8 @@ class PaymentRequestMixin(object):
         return response_data
 
 
-class TransactionCompletedView(RedirectView):
-    permanent = False
-    url = None
+class TransactionCompletedView(TemplateView):
+    template_name = 'django_pesapal/post_payment.html'
 
     def get(self, request, *args, **kwargs):
         '''
@@ -152,23 +155,82 @@ class TransactionCompletedView(RedirectView):
 
         For further processing just create a `post_save` signal on the `Transaction` model.
         '''
-        self.transaction_id = request.GET.get('pesapal_transaction_tracking_id', '')
-        self.merchant_reference = request.GET.get('pesapal_merchant_reference', '')
+        transaction_id = request.GET.get('pesapal_transaction_tracking_id', 0)
+        merchant_reference = request.GET.get('pesapal_merchant_reference', 0)
 
-        if self.transaction_id and self.merchant_reference:
-            transaction, created = Transaction.objects.get_or_create(
-                merchant_reference=self.merchant_reference,
-                pesapal_transaction=self.transaction_id
+        if transaction_id and merchant_reference:
+            self.transaction, created = Transaction.objects.get_or_create(
+                merchant_reference=merchant_reference,
+                pesapal_transaction=transaction_id
             )
+
 
         return super(TransactionCompletedView, self).get(request, *args, **kwargs)
 
-    def get_redirect_url(self, *args, **kwargs):
-        '''
-        Reverses the set redirect url and adds a merchant_reference as a GET parameter
-        '''
-        url = reverse_lazy(settings.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
 
-        if settings.PESAPAL_REDIRECT_WITH_REFERENCE:
-            url += '?' + urllib.urlencode({'merchant_reference': self.merchant_reference})
+    def get_context_data(self, **kwargs):
+        ctx = super(TransactionCompletedView, self).get_context_data(**kwargs)
+
+        completed_url = reverse(settings.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
+        ctx['transaction_completed_url'] = completed_url
+
+        status_url = reverse('transaction_status')
+        status_url += '?' + urllib.urlencode({
+                'pesapal_merchant_reference': self.transaction.merchant_reference,
+                'pesapal_transaction_tracking_id': self.transaction.pesapal_transaction
+            }
+        )
+
+        ctx['check_status_url'] = status_url
+
+        if self.transaction.payment_status == Transaction.PENDING:
+            message = _('Your payment is being processed. We will notify you once it has completed')
+            ctx['payment_pending'] = True
+        else:
+            if self.transaction.payment_status == Transaction.COMPLETED:
+                message = _('Your payment has been successfully processed. The page should automatically redirect in 3 seconds.')
+            elif self.transaction.payment_status == Transaction.FAILED:
+                message = _('The processing of your payment failed. Please contact the system administrator.')
+            else:
+                # INVALID
+                message = _('The payment details you provided are invalid. Please confirm they are correct and then try again in 5 minutes.')
+
+        ctx['message'] = message
+        return ctx
+class TransactionStatusView(RedirectView, PaymentRequestMixin):
+    permanent = False
+    url = None
+
+    def get_redirect_url(self, *args, **kwargs):
+        merchant_reference = self.request.GET.get('pesapal_merchant_reference', 0)
+        transaction_id = self.request.GET.get('pesapal_transaction_tracking_id', 0)
+
+        params = {
+            'pesapal_merchant_reference': merchant_reference,
+            'pesapal_transaction_tracking_id': transaction_id,
+        }
+
+        transaction = get_object_or_404(
+            Transaction,
+            merchant_reference=merchant_reference,
+            pesapal_transaction=transaction_id
+        )
+
+        # check status from pesapal server
+        response = self.get_payment_status(**params)
+
+        if response['payment_status'] == 'COMPLETED':
+            transaction.payment_status = Transaction.COMPLETED
+        elif response['payment_status'] == 'FAILED':
+            transaction.payment_status = Transaction.FAILED
+            logger.error('Failed Transaction: {}'.format(transaction))
+        elif response['payment_status'] == 'INVALID':
+            transaction.payment_status = Transaction.INVALID
+            logger.error('Invalid Transaction: {}'.format(transaction))
+
+        transaction.save()
+
+        # redirect back to Transaction completed view
+        url = reverse('transaction_completed')
+        url += '?' + urllib.urlencode(params)
         return url
