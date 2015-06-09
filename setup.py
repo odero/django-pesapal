@@ -33,7 +33,7 @@ setup(
     packages=find_packages(exclude=['sandbox*']),
     include_package_data=True,
     install_requires=[
-        'Django>=1.5.4,<=1.6.11',
+        'Django>=1.7,<=1.7.8',
         'oauth2==1.5.211',
         'django-uuidfield<=0.6.0',
     ],
