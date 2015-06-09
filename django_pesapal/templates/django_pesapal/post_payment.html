@@ -26,3 +26,18 @@
     </div>
   </div>
 {% endblock content %}
+
+{% block javascript %}
+  {% if payment_status == 1 %}
+    <script type="text/javascript">
+      setTimeout(function() {
+        location.href='{{ transaction_completed_url }}';
+      }, 3000);
+
+      var counter = 3;
+      setInterval(function() {
+        $('.countdown').text(--counter);
+      }, 1000);
+    </script>
+  {% endif %}
+{% endblock javascript %}
