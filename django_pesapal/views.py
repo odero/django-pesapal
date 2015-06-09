@@ -2,7 +2,9 @@
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.views.generic.base import View, RedirectView, TemplateView
 
@@ -160,7 +162,6 @@ class TransactionCompletedView(TemplateView):
                 pesapal_transaction=transaction_id
             )
 
-
         return super(TransactionCompletedView, self).get(request, *args, **kwargs)
 
 
@@ -178,55 +179,80 @@ class TransactionCompletedView(TemplateView):
         )
 
         ctx['check_status_url'] = status_url
+        ctx['payment_status'] = self.transaction.payment_status
 
         if self.transaction.payment_status == Transaction.PENDING:
             message = _('Your payment is being processed. We will notify you once it has completed')
             ctx['payment_pending'] = True
         else:
             if self.transaction.payment_status == Transaction.COMPLETED:
-                message = _('Your payment has been successfully processed. The page should automatically redirect in 3 seconds.')
+                message = mark_safe(
+                    _('''Your payment has been successfully processed.
+                        The page should automatically redirect in <span class='countdown'>3</span> seconds.
+                    ''')
+                )
             elif self.transaction.payment_status == Transaction.FAILED:
                 message = _('The processing of your payment failed. Please contact the system administrator.')
             else:
                 # INVALID
-                message = _('The payment details you provided are invalid. Please confirm they are correct and then try again in 5 minutes.')
+                message = _('The transaction details provided were invalid.')
 
         ctx['message'] = message
         return ctx
-class TransactionStatusView(RedirectView, PaymentRequestMixin):
-    permanent = False
-    url = None
 
-    def get_redirect_url(self, *args, **kwargs):
-        merchant_reference = self.request.GET.get('pesapal_merchant_reference', 0)
-        transaction_id = self.request.GET.get('pesapal_transaction_tracking_id', 0)
+
+class UpdatePaymentStatusMixin(PaymentRequestMixin):
+    def get_params(self):
+        self.merchant_reference = self.request.GET.get('pesapal_merchant_reference', 0)
+        self.transaction_id = self.request.GET.get('pesapal_transaction_tracking_id', 0)
 
         params = {
-            'pesapal_merchant_reference': merchant_reference,
-            'pesapal_transaction_tracking_id': transaction_id,
+            'pesapal_merchant_reference': self.merchant_reference,
+            'pesapal_transaction_tracking_id': self.transaction_id,
         }
 
-        transaction = get_object_or_404(
+        return params
+
+    def process_payment_status(self):
+        params = self.get_params()
+
+        self.transaction = get_object_or_404(
             Transaction,
-            merchant_reference=merchant_reference,
-            pesapal_transaction=transaction_id
+            merchant_reference=self.merchant_reference,
+            pesapal_transaction=self.transaction_id
         )
 
         # check status from pesapal server
         response = self.get_payment_status(**params)
 
         if response['payment_status'] == 'COMPLETED':
-            transaction.payment_status = Transaction.COMPLETED
+            self.transaction.payment_status = Transaction.COMPLETED
         elif response['payment_status'] == 'FAILED':
-            transaction.payment_status = Transaction.FAILED
-            logger.error('Failed Transaction: {}'.format(transaction))
+            self.transaction.payment_status = Transaction.FAILED
+            logger.error('Failed Transaction: {}'.format(self.transaction))
         elif response['payment_status'] == 'INVALID':
-            transaction.payment_status = Transaction.INVALID
-            logger.error('Invalid Transaction: {}'.format(transaction))
+            self.transaction.payment_status = Transaction.INVALID
+            logger.error('Invalid Transaction: {}'.format(self.transaction))
 
-        transaction.save()
+        self.transaction.save()
+
+
+class TransactionStatusView(UpdatePaymentStatusMixin, RedirectView):
+    permanent = False
+    url = None
+
+    def get_redirect_url(self, *args, **kwargs):
+
+        params = self.get_params()
+        self.process_payment_status()
 
         # redirect back to Transaction completed view
         url = reverse('transaction_completed')
         url += '?' + urllib.urlencode(params)
         return url
+
+
+class IPNCallbackView(UpdatePaymentStatusMixin, View):
+    def get(self, request, *args, **kwargs):
+        self.process_payment_status()
+        return HttpResponse('OK')
