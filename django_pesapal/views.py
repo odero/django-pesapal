@@ -125,7 +125,6 @@ class PaymentRequestMixin(object):
 
         url = signed_request.to_url()
 
-        start_time = time.time()
         response = requests.get(url, headers={'content-type': 'text/namevalue; charset=utf-8'})
         if response.status_code != requests.codes.ok:
             logger.error('Unable to complete payment status request with error response code {0}'.format(response.status_code))
@@ -134,13 +133,10 @@ class PaymentRequestMixin(object):
             comm_status = True
 
         response_data = {}
-
-        # !!! Important handle the response if it is not 'OK'
-        response_data['_raw_request'] = url
-        response_data['_raw_response'] = response.text
-        response_data['_comm_success'] = comm_status  # communication status
-        response_data['_payment_status'] = response.text.partition('=')[2]  # The important detail
-        response_data['_response_time'] = (time.time() - start_time) * 1000.0
+        response_data['raw_request'] = url
+        response_data['raw_response'] = response.text
+        response_data['comm_success'] = comm_status  # communication status
+        response_data['payment_status'] = response.text.split('=')[1]  # The important detail
 
         return response_data
 
