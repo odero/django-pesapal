@@ -8,10 +8,10 @@ if settings.configured:
 
     if PESAPAL_DEMO:
         PESAPAL_IFRAME_LINK = getattr(settings, 'PESAPAL_IFRAME_LINK', 'http://demo.pesapal.com/api/PostPesapalDirectOrderV4')
-        PESAPAL_QUERY_STATUS_LINK = getattr(settings, 'PESAPAL_QUERY_STATUS_LINK', 'http://demo.pesapal.com/API/QueryPaymentStatus')
+        PESAPAL_QUERY_STATUS_LINK = getattr(settings, 'PESAPAL_QUERY_STATUS_LINK', 'http://demo.pesapal.com/API/QueryPaymentDetails')
     else:
         PESAPAL_IFRAME_LINK = getattr(settings, 'PESAPAL_IFRAME_LINK', 'https://www.pesapal.com/api/PostPesapalDirectOrderV4')
-        PESAPAL_QUERY_STATUS_LINK = getattr(settings, 'PESAPAL_QUERY_STATUS_LINK', 'https://www.pesapal.com/API/QueryPaymentStatus')
+        PESAPAL_QUERY_STATUS_LINK = getattr(settings, 'PESAPAL_QUERY_STATUS_LINK', 'https://www.pesapal.com/API/QueryPaymentDetails')
 
     PESAPAL_CONSUMER_KEY = getattr(settings, 'PESAPAL_CONSUMER_KEY', '')
     PESAPAL_CONSUMER_SECRET = getattr(settings, 'PESAPAL_CONSUMER_SECRET', '')

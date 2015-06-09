@@ -137,8 +137,12 @@ class PaymentRequestMixin(object):
         response_data = {}
         response_data['raw_request'] = url
         response_data['raw_response'] = response.text
-        response_data['comm_success'] = comm_status  # communication status
-        response_data['payment_status'] = response.text.split('=')[1]  # The important detail
+        response_data['comm_success'] = comm_status
+
+        _, values = response.text.split('=')
+        _, payment_method, status, _ = values.split(',')
+        response_data['payment_status'] = status
+        response_data['payment_method'] = payment_method
 
         return response_data
 
@@ -227,8 +231,10 @@ class UpdatePaymentStatusMixin(PaymentRequestMixin):
 
         if response['payment_status'] == 'COMPLETED':
             self.transaction.payment_status = Transaction.COMPLETED
+            self.transaction.payment_method = response['payment_method']
         elif response['payment_status'] == 'FAILED':
             self.transaction.payment_status = Transaction.FAILED
+            self.transaction.payment_method = response['payment_method']
             logger.error('Failed Transaction: {}'.format(self.transaction))
         elif response['payment_status'] == 'INVALID':
             self.transaction.payment_status = Transaction.INVALID
