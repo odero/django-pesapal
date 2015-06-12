@@ -2,6 +2,13 @@
 
 History
 -------
+0.3 (2015-06-12)
+++++++++++++++++++
+- Introduce intermediate payment processing screen
+- Update Django version to 1.7+
+- Add support to receive and process IPN
+- Save all details about the transaction and status
+
 0.2.1 (2015-04-03)
 ++++++++++++++++++
 - Added test sandbox
