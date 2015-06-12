@@ -4,7 +4,6 @@ language: python
 
 python:
   - "2.7"
-  - "2.6"
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install -r requirements-test.txt
@@ -14,10 +13,12 @@ script: coverage run --source django_pesapal runtests.py
 
 # report coverage to coveralls.io
 after_success: coveralls
+
 branches:
   only:
     - master
     - develop
+
 notifications:
     email:
         on_success: never
