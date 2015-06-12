@@ -33,10 +33,10 @@ setup(
     packages=find_packages(exclude=['sandbox*']),
     include_package_data=True,
     install_requires=[
-        'Django>=1.5.4,<=1.6.11',
+        'Django>=1.7,<=1.7.8',
         'oauth2==1.5.211',
         'django-uuidfield<=0.6.0',
-        'requests==2.1'
+        'requests==2.1',
     ],
     dependency_links=[
         "https://github.com/dcramer/django-uuidfield/archive/9bd27e9.zip#egg=django-uuidfield-0.6.0",
@@ -53,7 +53,6 @@ setup(
         'Operating System :: OS Independent',
         'Natural Language :: English',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',

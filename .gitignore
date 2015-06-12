@@ -1,4 +1,5 @@
 *.py[cod]
+.python-version
 
 # C extensions
 *.so
@@ -40,3 +41,6 @@ output/*/index.html
 
 # Sphinx
 docs/_build
+
+# test db
+db.sqlite3
