@@ -36,6 +36,7 @@ setup(
         'Django>=1.7,<=1.7.8',
         'oauth2==1.5.211',
         'django-uuidfield<=0.6.0',
+        'requests==2.1'
     ],
     dependency_links=[
         "https://github.com/dcramer/django-uuidfield/archive/9bd27e9.zip#egg=django-uuidfield-0.6.0",
