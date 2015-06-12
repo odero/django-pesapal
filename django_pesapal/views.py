@@ -1,9 +1,8 @@
 
-from django.contrib import messages
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.views.generic.base import View, RedirectView, TemplateView
@@ -17,7 +16,6 @@ import conf as settings
 import logging
 import oauth2 as oauth
 import requests
-import time
 import urllib
 
 DEFAULT_TYPE = "MERCHANT"
@@ -168,7 +166,6 @@ class TransactionCompletedView(TemplateView):
 
         return super(TransactionCompletedView, self).get(request, *args, **kwargs)
 
-
     def get_context_data(self, **kwargs):
         ctx = super(TransactionCompletedView, self).get_context_data(**kwargs)
 
@@ -176,7 +173,8 @@ class TransactionCompletedView(TemplateView):
         ctx['transaction_completed_url'] = completed_url
 
         status_url = reverse('transaction_status')
-        status_url += '?' + urllib.urlencode({
+        status_url += '?' + urllib.urlencode(
+            {
                 'pesapal_merchant_reference': self.transaction.merchant_reference,
                 'pesapal_transaction_tracking_id': self.transaction.pesapal_transaction
             }

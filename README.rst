@@ -104,11 +104,10 @@ in the destination view set as the PESAPAL_OAUTH_CALLBACK_URL.
 
     # It returns a dictionary with the following keys
 
-        response_data['_raw_request']    # The params that the request were made with
-        response_data['_raw_response']   # Useful for debugging
-        response_data['_comm_success']   # A bool communication status
-        response_data['_payment_status'] # The payment status
-        response_data['_response_time']  # Time taken for the response
+        response_data['raw_request']    # The params that the request were made with
+        response_data['raw_response']   # Useful for debugging
+        response_data['comm_success']   # A bool communication status
+        response_data['payment_status'] # The payment status
 
 Configuration
 =============
