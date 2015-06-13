@@ -1,6 +1,7 @@
 
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
+from django.db.models.loading import get_model
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
@@ -8,8 +9,6 @@ from django.utils.translation import ugettext as _
 from django.views.generic.base import View, RedirectView, TemplateView
 
 from xml.etree import cElementTree as ET
-
-from models import Transaction
 
 import conf as settings
 
@@ -19,6 +18,7 @@ import requests
 import urllib
 
 DEFAULT_TYPE = "MERCHANT"
+Transaction = get_model(settings.PESAPAL_TRANSACTION_MODEL)
 
 logger = logging.getLogger(__name__)
 
@@ -146,15 +146,17 @@ class PaymentRequestMixin(object):
 
 
 class TransactionCompletedView(TemplateView):
+    '''
+    After Pesapal processes the transaction this will save the transaction and then redirect
+    to whatever redirect URL in your settings as `PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL`.
+
+    For further processing just create a `post_save` signal on the `Transaction` model.
+    '''
+
     template_name = 'django_pesapal/post_payment.html'
 
     def get(self, request, *args, **kwargs):
-        '''
-        After Pesapal processes the transaction this will save the transaction and then redirect
-        to whatever reidrect URL in your settings as `PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL`.
 
-        For further processing just create a `post_save` signal on the `Transaction` model.
-        '''
         transaction_id = request.GET.get('pesapal_transaction_tracking_id', 0)
         merchant_reference = request.GET.get('pesapal_merchant_reference', 0)
 
@@ -167,18 +169,22 @@ class TransactionCompletedView(TemplateView):
         return super(TransactionCompletedView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+
         ctx = super(TransactionCompletedView, self).get_context_data(**kwargs)
 
-        completed_url = reverse(settings.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
-        ctx['transaction_completed_url'] = completed_url
-
-        status_url = reverse('transaction_status')
-        status_url += '?' + urllib.urlencode(
+        url_params = '?' + urllib.urlencode(
             {
                 'pesapal_merchant_reference': self.transaction.merchant_reference,
                 'pesapal_transaction_tracking_id': self.transaction.pesapal_transaction
             }
         )
+
+        completed_url = reverse(settings.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
+        completed_url += url_params
+        ctx['transaction_completed_url'] = completed_url
+
+        status_url = reverse('transaction_status')
+        status_url += url_params
 
         ctx['check_status_url'] = status_url
         ctx['payment_status'] = self.transaction.payment_status

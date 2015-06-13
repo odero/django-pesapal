@@ -9,7 +9,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">{% trans "Redirect Page" %}</h3>
-        </div>      
+        </div>
         <div class="panel-body">
           <p>
             {% trans "Thank you for making the purchase" %}
@@ -28,6 +28,7 @@
 {% endblock content %}
 
 {% block javascript %}
+  {{ block.super }}
   {% if payment_status == 1 %}
     <script type="text/javascript">
       setTimeout(function() {
