@@ -1,6 +1,7 @@
 
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
+from django.db.models.loading import get_model
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
@@ -8,8 +9,6 @@ from django.utils.translation import ugettext as _
 from django.views.generic.base import View, RedirectView, TemplateView
 
 from xml.etree import cElementTree as ET
-
-from models import Transaction
 
 import conf as settings
 
@@ -19,6 +18,7 @@ import requests
 import urllib
 
 DEFAULT_TYPE = "MERCHANT"
+Transaction = get_model(settings.PESAPAL_TRANSACTION_MODEL)
 
 logger = logging.getLogger(__name__)
 
