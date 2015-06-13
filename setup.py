@@ -29,6 +29,7 @@ setup(
     description="""A django port of pesapal payment gateway""",
     long_description=readme + '\n\n' + history,
     author='Billy Odero',
+    author_email='odero@xx.com',
     url='https://github.com/odero/django-pesapal',
     packages=find_packages(exclude=['sandbox*']),
     include_package_data=True,

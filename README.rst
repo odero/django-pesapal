@@ -93,7 +93,7 @@ checks the current status on the server and then notifies the user.
 
 
 Configuration
-=============
+-------------
 
 +---------------------------------------------+--------------------------------------------------------+
 | Setting                                     | Default Value                                          |
