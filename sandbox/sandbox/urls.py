@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 
 from django.contrib import admin
-from testapp.views import PaymentView, ResponseView
+from testapp.views import PaymentView
 admin.autodiscover()
 
 urlpatterns = patterns('',

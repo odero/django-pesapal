@@ -2,6 +2,12 @@
 
 History
 -------
+0.3.1 (2015-06-13)
+++++++++++++++++++
+- Allow specifying own transaction model
+- Pass all transaction info when redirecting
+- Update intermediate template
+
 0.3 (2015-06-12)
 ++++++++++++++++++
 - Introduce intermediate payment processing screen
