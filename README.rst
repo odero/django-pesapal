@@ -1,19 +1,19 @@
-=============================
+==============
 django-pesapal
-=============================
+==============
 
 .. image:: https://badge.fury.io/py/django-pesapal.png
-    :target: https://badge.fury.io/py/django-pesapal
+   :target: https://badge.fury.io/py/django-pesapal
 
 .. image:: https://travis-ci.org/odero/django-pesapal.png?branch=master
-    :target: https://travis-ci.org/odero/django-pesapal
+   :target: https://travis-ci.org/odero/django-pesapal
 
 .. image:: https://coveralls.io/repos/odero/django-pesapal/badge.png?branch=master
-    :target: https://coveralls.io/r/odero/django-pesapal?branch=master
+   :target: https://coveralls.io/r/odero/django-pesapal?branch=master
 
 .. image:: https://pypip.in/status/django-pesapal/badge.svg
-    :target: https://pypi.python.org/pypi/django-pesapal/
-    :alt: Development Status
+   :target: https://pypi.python.org/pypi/django-pesapal/
+   :alt: Development Status
 
 A django port of pesapal payment gateway
 
@@ -33,7 +33,6 @@ Then use it in a project::
 
     import django_pesapal
 
-
 #. Add `django_pesapal` to your `INSTALLED_APPS` setting like this::
 
     INSTALLED_APPS = (
@@ -45,43 +44,41 @@ Then use it in a project::
 
     url(r'^payments/', include('django_pesapal.urls')),
 
-This is optional. You can set your own return url by adding this to `settings.py`::
+You can set your own return url by adding this to `settings.py`::
 
-    PESAPAL_OAUTH_CALLBACK_URL = 'app_name:url_name'  # this needs to be a reversible
+    PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = 'app_name:url_name'  # this needs to be a reversible
 
-The url has the 'merchant_reference' GET parameter which can be extracted for further processing, or ignored.
-
-for example it can be extracted using
-
-self.merchant_reference = request.GET.get('merchant_reference', '')
-
-in the destination view set as the PESAPAL_OAUTH_CALLBACK_URL.
-
-#. Run `python manage.py syncdb` to create the models.
+#. Run `python manage.py migrate` to create the models.
 
 #. Create a method that receives payment details and returns the pesapal iframe url::
 
-    from django_pesapal.app import get_payment_url
+    from django_pesapal.views import PaymentRequestMixin
 
-    def get_pesapal_payment_iframe():
-        '''
-        Authenticates with pesapal to get the payment iframe src
-        '''
+    class PaymentView(PaymentRequestMixin):
 
-        order_info = {
-            'amount': 100,
-            'description': 'Payment for X',
-            'reference': 2,  # some object id
-            'email': 'user@example.com'
-        }
+        def get_pesapal_payment_iframe(self):
 
-        iframe_src_url = get_payment_url(**order_info)
-        return iframe_src_url
+            '''
+            Authenticates with pesapal to get the payment iframe src
+            '''
+            order_info = {
+                'first_name': 'Some',
+                'last_name': 'User',
+                'amount': 100,
+                'description': 'Payment for X',
+                'reference': 2,  # some object id
+                'email': 'user@example.com',
+            }
 
+            iframe_src_url = self.get_payment_url(**order_info)
+            return iframe_src_url
+
+# Once payment has been processed, you will be redirected to an intermediate screen where 
+the user can check the payment status to ensure that the payment was successful.
 
 **NB:** `get_payment_url` is defined as::
 
-    def get_payment_url(**kwargs):
+    def get_payment_url(self, **kwargs):
         '''
         Use the computed order information to generate a url for the Pesapal iframe.
 
@@ -90,24 +87,10 @@ in the destination view set as the PESAPAL_OAUTH_CALLBACK_URL.
             Optional params: `first_name`, `last_name`
         '''
 
-#. `get_payment_status` is used get the payment status and is defined as::
+#. `PaymentRequestMixin` also defins `get_payment_status`, which can be used check the payment status.
+The intermediate screen has a button for checking the payment status. Clicking on the button automatically
+checks the current status on the server and then notifies the user. 
 
-    def get_payment_status(**kwargs):
-
-        '''
-        Query the payment status from pesapal using the transaction id and the merchant reference id
-
-        Params should include the following keys:
-            Required params: `pesapal_merchant_reference`, `pesapal_transaction_tracking_id`
-        '''
-
-
-    # It returns a dictionary with the following keys
-
-        response_data['raw_request']    # The params that the request were made with
-        response_data['raw_response']   # Useful for debugging
-        response_data['comm_success']   # A bool communication status
-        response_data['payment_status'] # The payment status
 
 Configuration
 =============
