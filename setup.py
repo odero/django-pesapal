@@ -32,7 +32,7 @@ setup(
     author_email='odero@xx.com',
     url='https://github.com/odero/django-pesapal',
     packages=find_packages(exclude=['sandbox*']),
-    include_package_data=True,
+    package_data={'django_pesapal': ['templates/django_pesapal/*.html']},
     install_requires=[
         'Django>=1.7,<=1.7.8',
         'oauth2==1.5.211',

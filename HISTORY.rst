@@ -2,6 +2,10 @@
 
 History
 -------
+0.3.3 (2015-06-29)
+++++++++++++++++++
+- Setup build had not packaged the templates
+
 0.3.2 (2015-06-13)
 ++++++++++++++++++
 - Fix documentation formatting issues
