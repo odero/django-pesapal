@@ -44,7 +44,7 @@ Then use it in a project::
 
     url(r'^payments/', include('django_pesapal.urls')),
 
-You can set your own return url by adding this to `settings.py`::
+#. You can set your own return url by adding this to `settings.py`::
 
     PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = 'app_name:url_name'  # this needs to be a reversible
 
@@ -73,23 +73,9 @@ You can set your own return url by adding this to `settings.py`::
             iframe_src_url = self.get_payment_url(**order_info)
             return iframe_src_url
 
-# Once payment has been processed, you will be redirected to an intermediate screen where 
-the user can check the payment status to ensure that the payment was successful.
+#. Once payment has been processed, you will be redirected to an intermediate screen where the user can check the payment status to ensure that the payment was successful.
 
-**NB:** `get_payment_url` is defined as::
-
-    def get_payment_url(self, **kwargs):
-        '''
-        Use the computed order information to generate a url for the Pesapal iframe.
-
-        Params should include the following keys:
-            Required params: `amount`, `description`, `reference`, `email`
-            Optional params: `first_name`, `last_name`
-        '''
-
-#. `PaymentRequestMixin` also defins `get_payment_status`, which can be used check the payment status.
-The intermediate screen has a button for checking the payment status. Clicking on the button automatically
-checks the current status on the server and then notifies the user. 
+#. The intermediate screen has a button for checking the payment status. Clicking on the button automatically checks the current status on the server and then notifies the user. 
 
 
 Configuration
@@ -108,17 +94,19 @@ Configuration
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_IFRAME_LINK (if PESAPAL_DEMO=False) | 'https://www.pesapal.com/api/PostPesapalDirectOrderV4' |
 +---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_QUERY_STATUS_LINK (Demo Mode=True)  | 'http://demo.pesapal.com/API/QueryPaymentStatus'       |
+| PESAPAL_QUERY_STATUS_LINK (Demo Mode=True)  | 'http://demo.pesapal.com/API/QueryPaymentDetails'      |
 +---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_QUERY_STATUS_LINK (Demo Mode=False) | 'https://www.pesapal.com/API/QueryPaymentStatus'       |
+| PESAPAL_QUERY_STATUS_LINK (Demo Mode=False) | 'https://www.pesapal.com/API/QueryPaymentDetails'      |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_OAUTH_CALLBACK_URL                  | 'transaction_completed'                                |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_OAUTH_SIGNATURE_METHOD              | 'SignatureMethod_HMAC_SHA1'                            |
 +---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL    | ''                                                     |
+| PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL    | '/'                                                    |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_TRANSACTION_FAILED_REDIRECT_URL     | ''                                                     |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_REDIRECT_WITH_REFERENCE             | True                                                   |
++---------------------------------------------+--------------------------------------------------------+
+| PESAPAL_TRANSACTION_MODEL                   | 'django_pesapal.Transaction'                           |
 +---------------------------------------------+--------------------------------------------------------+

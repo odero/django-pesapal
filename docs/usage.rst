@@ -1,6 +1,6 @@
-========
+======
 Usage
-========
+======
 
 Take a look at the sandbox app for a quick overview on how to use `django-pesapal`.
 
@@ -20,6 +20,8 @@ To use django-pesapal in a project::
             ctx = super(PaymentView, self).get_context_data(**kwargs)
 
             order_info = {
+                'first_name': 'Some',
+                'last_name': 'User',
                 'amount': 100,
                 'description': 'Payment for X',
                 'reference': 2,
@@ -32,32 +34,8 @@ To use django-pesapal in a project::
             return ctx
 
 
-    class ResponseView(TemplateView, PaymentRequestMixin):
-        """
-        Use this view if you want to find out the status of a transaction
-        """
-        template_name = 'testapp/response.html'
+Once processing is complete the user will be redirected to the intermediate processing where
+they can update check the status of the payment
 
-        def get(self, request, *args, **kwargs):
-                self.merchant_reference = request.GET.get('merchant_reference', '')
-
-                return super(ResponseView, self).get(request, *args, **kwargs)
-
-        def get_context_data(self, **kwargs):
-            ctx = super(ResponseView, self).get_context_data(**kwargs)
-
-            if self.merchant_reference:
-                try:
-                    txn = Transaction.objects.get(merchant_reference=self.merchant_reference)
-                    params = {
-                        'pesapal_merchant_reference': txn.merchant_reference,
-                        'pesapal_transaction_tracking_id': txn.pesapal_transaction,
-                    }
-
-                    # In production, the following call should be made asynchronously with something like celery
-                    ctx['response'] = self.get_payment_status(**params)
-                except Transaction.DoesNotExist, e:
-                    # In production, deal with this dont just print e
-                    print e
-
-            return ctx
+**NOTE:** You can override the intermediate (`post_payment.html`) processing template if you 
+need to have a customized look.
