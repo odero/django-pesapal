@@ -146,6 +146,7 @@ class PaymentRequestMixin(object):
 
 
 class TransactionCompletedView(TemplateView):
+
     '''
     After Pesapal processes the transaction this will save the transaction and then redirect
     to whatever redirect URL in your settings as `PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL`.
@@ -210,9 +211,10 @@ class TransactionCompletedView(TemplateView):
 
 
 class UpdatePaymentStatusMixin(PaymentRequestMixin):
+
     def get_params(self):
         self.merchant_reference = self.request.GET.get('pesapal_merchant_reference', 0)
-        self.transaction_id = self.request.GET.get('pesapal_transaction_tracking_id', 0)
+        self.transaction_id = self.request.GET.get('pesapal_transaction_tracking_id', None)
 
         params = {
             'pesapal_merchant_reference': self.merchant_reference,
@@ -248,6 +250,7 @@ class UpdatePaymentStatusMixin(PaymentRequestMixin):
 
 
 class TransactionStatusView(UpdatePaymentStatusMixin, RedirectView):
+
     permanent = False
     url = None
 
@@ -263,6 +266,7 @@ class TransactionStatusView(UpdatePaymentStatusMixin, RedirectView):
 
 
 class IPNCallbackView(UpdatePaymentStatusMixin, View):
+
     def get(self, request, *args, **kwargs):
         self.process_payment_status()
         return HttpResponse('OK')
