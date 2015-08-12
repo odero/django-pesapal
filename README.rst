@@ -73,9 +73,7 @@ Then use it in a project::
             iframe_src_url = self.get_payment_url(**order_info)
             return iframe_src_url
 
-#. Once payment has been processed, you will be redirected to an intermediate screen where the user can check the payment status to ensure that the payment was successful.
-
-#. The intermediate screen has a button for checking the payment status. Clicking on the button automatically checks the current status on the server and then notifies the user. 
+#. Once payment has been processed, you will be redirected to an intermediate screen where the user can finish ordering. Clicking the "Finish Ordering" button will check the payment status to ensure that the payment was successful and then redirects the user to `PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL`.
 
 
 Configuration

@@ -2,6 +2,10 @@
 
 History
 -------
+0.3.4 (2015-08-12)
+++++++++++++++++++
+- Restructure flow to better support IPN processing
+
 0.3.3 (2015-06-29)
 ++++++++++++++++++
 - Setup build had not packaged the templates
