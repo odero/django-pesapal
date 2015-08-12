@@ -5,7 +5,7 @@ from django.db.models.loading import get_model
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic.base import View, RedirectView, TemplateView
 
 from xml.etree import cElementTree as ET
@@ -145,7 +145,29 @@ class PaymentRequestMixin(object):
         return response_data
 
 
-class TransactionCompletedView(TemplateView):
+class PaymentResponseMixin(object):
+
+    def build_url_params(self):
+        url_params = '?' + urllib.urlencode(
+            {
+                'pesapal_merchant_reference': self.transaction.merchant_reference,
+                'pesapal_transaction_tracking_id': self.transaction.pesapal_transaction
+            }
+        )
+        return url_params
+
+    def get_payment_status_url(self):
+        status_url = reverse('transaction_status')
+        status_url += self.build_url_params()
+        return status_url
+
+    def get_order_completion_url(self):
+        completed_url = reverse(settings.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
+        completed_url += self.build_url_params()
+        return completed_url
+
+
+class TransactionCompletedView(PaymentResponseMixin, TemplateView):
 
     '''
     After Pesapal processes the transaction this will save the transaction and then redirect
@@ -173,21 +195,7 @@ class TransactionCompletedView(TemplateView):
 
         ctx = super(TransactionCompletedView, self).get_context_data(**kwargs)
 
-        url_params = '?' + urllib.urlencode(
-            {
-                'pesapal_merchant_reference': self.transaction.merchant_reference,
-                'pesapal_transaction_tracking_id': self.transaction.pesapal_transaction
-            }
-        )
-
-        completed_url = reverse(settings.PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL)
-        completed_url += url_params
-        ctx['transaction_completed_url'] = completed_url
-
-        status_url = reverse('transaction_status')
-        status_url += url_params
-
-        ctx['check_status_url'] = status_url
+        ctx['transaction_completed_url'] = self.get_order_completion_url()
         ctx['payment_status'] = self.transaction.payment_status
 
         if self.transaction.payment_status == Transaction.PENDING:
@@ -257,15 +265,17 @@ class TransactionStatusView(UpdatePaymentStatusMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
 
         params = self.get_params()
+
         self.process_payment_status()
 
         # redirect back to Transaction completed view
         url = reverse('transaction_completed')
         url += '?' + urllib.urlencode(params)
+
         return url
 
 
-class IPNCallbackView(UpdatePaymentStatusMixin, View):
+class IPNCallbackView(UpdatePaymentStatusMixin, PaymentResponseMixin, View):
 
     def get(self, request, *args, **kwargs):
         self.process_payment_status()
