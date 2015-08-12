@@ -17,10 +17,7 @@
           <blockquote>
             {{ message }}
           </blockquote>
-          {% if payment_pending %}
-            <a href="{{ check_status_url }}" class="btn btn-primary">{% trans "Check payment status" %}</a>  
-          {% endif %}
-          <a href="{{ transaction_completed_url }}" class="btn btn-success pull-right">{% trans "Continue Shopping" %}</a>
+          <a href="{{ transaction_completed_url }}" class="btn btn-success pull-right">{% trans "Finish Ordering" %}</a>
         </div>
       </div>
     </div>
@@ -36,8 +33,9 @@
       }, 3000);
 
       var counter = 3;
-      setInterval(function() {
+      var intervalID = setInterval(function() {
         $('.countdown').text(--counter);
+        if (counter == 0) clearInterval(intervalID);
       }, 1000);
     </script>
   {% endif %}
