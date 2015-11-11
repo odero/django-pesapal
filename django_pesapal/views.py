@@ -201,6 +201,7 @@ class TransactionCompletedView(PaymentResponseMixin, TemplateView):
         ctx = super(TransactionCompletedView, self).get_context_data(**kwargs)
 
         ctx['transaction_completed_url'] = self.get_order_completion_url()
+        ctx['transaction_status_url'] = self.get_payment_status_url()
         ctx['payment_status'] = self.transaction.payment_status
 
         if self.transaction.payment_status == Transaction.PENDING:
