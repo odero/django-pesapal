@@ -35,7 +35,7 @@ setup(
     package_data={'django_pesapal': ['templates/django_pesapal/*.html']},
     install_requires=[
         'Django>=1.7',
-        'oauth2==1.9.0',
+        'oauth2==1.9.0.post1',
         'django-uuidfield<=0.6.0',
         'requests[security]==2.8.1',
     ],
