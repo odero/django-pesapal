@@ -2,6 +2,12 @@
 
 History
 -------
+0.3.5 (2015-11-11)
+++++++++++++++++++
+- Support Django 1.8
+- Support Py33 and Py34
+- Return proper IPN response
+
 0.3.4 (2015-08-12)
 ++++++++++++++++++
 - Restructure flow to better support IPN processing
