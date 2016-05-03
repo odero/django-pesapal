@@ -151,7 +151,7 @@ class PaymentRequestMixin(object):
 class PaymentResponseMixin(object):
 
     def build_url_params(self):
-        url_params = QueryDict(mutable=True)
+        url_params = QueryDict('', mutable=True)
         url_params.update(
             {
                 'pesapal_merchant_reference': self.transaction.merchant_reference,
@@ -276,7 +276,7 @@ class TransactionStatusView(UpdatePaymentStatusMixin, RedirectView):
         # redirect back to Transaction completed view
         url = reverse('transaction_completed')
 
-        query_dict = QueryDict(mutable=True)
+        query_dict = QueryDict('', mutable=True)
         query_dict.update(params)
         url += '?' + query_dict.urlencode()
 
@@ -289,7 +289,7 @@ class IPNCallbackView(UpdatePaymentStatusMixin, PaymentResponseMixin, View):
         params = self.get_params()
         params['pesapal_notification_type'] = self.request.GET.get('pesapal_notification_type')
 
-        query_dict = QueryDict(mutable=True)
+        query_dict = QueryDict('', mutable=True)
         query_dict.update(params)
         response = query_dict.urlencode()
         return HttpResponse(response)
