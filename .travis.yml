@@ -7,6 +7,9 @@ python:
   - "3.3"
   - "3.4"
 
+# set sudo: false to use new container-based infra on travis-ci.com
+sudo: false
+
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install -r requirements-test.txt
 
