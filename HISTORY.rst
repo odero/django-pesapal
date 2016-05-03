@@ -2,7 +2,7 @@
 
 History
 -------
-1.0.2 (2016-05-03)
+1.1.0 (2016-05-03)
 ++++++++++++++++++
 - Support Django 1.9
 - Update payment_method field length from 16 to 24
