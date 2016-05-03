@@ -2,6 +2,12 @@
 
 History
 -------
+1.0.2 (2016-05-03)
+++++++++++++++++++
+- Support Django 1.9
+- Update payment_method field length from 16 to 24
+- Remove support for Py33. Support Py35
+
 1.0.1 (2015-11-21)
 ++++++++++++++++++
 - Fix querydict bug
