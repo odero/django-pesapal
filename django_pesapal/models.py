@@ -17,7 +17,7 @@ class Transaction(models.Model):
         (FAILED, _('Failed')),
     )
     pesapal_transaction = UUIDField(hyphenate=True)
-    merchant_reference = models.IntegerField(db_index=True)
+    merchant_reference = models.CharField(max_lenght = 32,db_index=True)
     amount = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     created = models.DateTimeField(auto_now_add=True)
     payment_status = models.IntegerField(choices=TRANSACTION_STATUS, default=PENDING)
