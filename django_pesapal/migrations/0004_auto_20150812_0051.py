@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import uuidfield.fields
+import uuid
 
 
 class Migration(migrations.Migration):
@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='transaction',
             name='pesapal_transaction',
-            field=uuidfield.fields.UUIDField(hyphenate=True, name='pesapal_transaction'),
+            field=models.UUIDField(default=uuid.uuid4, editable=False, name='pesapal_transaction'),
             preserve_default=True,
         ),
     ]

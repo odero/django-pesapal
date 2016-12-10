@@ -1,6 +1,5 @@
 
 from django.conf import settings
-from django.db.models.loading import get_model
 from django.views.generic import TemplateView
 
 from django_pesapal.views import PaymentRequestMixin

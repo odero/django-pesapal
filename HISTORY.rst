@@ -2,6 +2,11 @@
 
 History
 -------
+1.2.0 (2016-12-10)
+++++++++++++++++++
+- Dropped support for Django 1.7
+- Use Django's UUIDField
+
 1.1.0 (2016-05-03)
 ++++++++++++++++++
 - Support Django 1.9

@@ -1,7 +1,4 @@
-Django>=1.7
-wheel==0.26.0
+Django>=1.8
+wheel==0.29.0
 oauth2==1.9.0.post1
-requests[security]>=2.8.1
-
-# Custom requirements
-git+https://github.com/dcramer/django-uuidfield.git@9bd27e9#egg=django-uuidfield
+requests[security]==2.12.3

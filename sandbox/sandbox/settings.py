@@ -26,8 +26,6 @@ SECRET_KEY = '53(upox#u=f-0#5ue!)owq&-h#u)7z(z-nel&#(*tqhr@e3-u9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -38,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'testapp',
@@ -91,9 +90,38 @@ STATIC_URL = '/static/'
 # Pesapal API configuration
 # Obtain test keys by creating a merchant account here http://demo.pesapal.com/
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
-)
+
+TEMPLATES = [
+    {
+        # See: https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+        'OPTIONS': {
+            # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-debug
+            'debug': DEBUG,
+            # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
+            # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
+            # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 LOGGING = {
     'version': 1,
@@ -113,11 +141,9 @@ LOGGING = {
     },
 }
 
-PESAPAL_CONSUMER_KEY = 'consumer_key'
-PESAPAL_CONSUMER_SECRET = 'consumer_key_secret'
-PESAPAL_DEMO=True
-PESAPAL_OAUTH_CALLBACK_URL ='transaction_completed'
-PESAPAL_OAUTH_SIGNATURE_METHOD ='SignatureMethod_HMAC_SHA1'
+PESAPAL_DEMO = True
+PESAPAL_OAUTH_CALLBACK_URL = 'transaction_completed'
+PESAPAL_OAUTH_SIGNATURE_METHOD = 'SignatureMethod_HMAC_SHA1'
 PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = 'payment'
 PESAPAL_DEMO = True
 PESAPAL_OAUTH_CALLBACK_URL = 'transaction_completed'
@@ -125,7 +151,7 @@ PESAPAL_OAUTH_SIGNATURE_METHOD = 'SignatureMethod_HMAC_SHA1'
 PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = 'transaction_completed'
 PESAPAL_TRANSACTION_FAILED_REDIRECT_URL = ''
 PESAPAL_ITEM_DESCRIPTION = False
-PESAPAL_TRANSACTION_MODEL = 'testapp.Transaction'
+PESAPAL_TRANSACTION_MODEL = 'django_pesapal.Transaction'
 
 # Override pesapal keys
 
