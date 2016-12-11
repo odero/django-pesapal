@@ -226,15 +226,15 @@ class TransactionCompletedView(PaymentResponseMixin, TemplateView):
 
         if self.transaction.payment_status == Transaction.PENDING:
             message = _(
-                'Your payment is being processed. We will notify you'
+                'Your payment is being processed. We will notify you '
                 'once it has completed'
             )
             ctx['payment_pending'] = True
         else:
             if self.transaction.payment_status == Transaction.COMPLETED:
                 message = mark_safe(
-                    _('Your payment has been successfully processed.'
-                      'The page should automatically redirect in'
+                    _('Your payment has been successfully processed. '
+                      'The page should automatically redirect in '
                       '<span class="countdown">3</span> seconds.'
                       )
                 )
