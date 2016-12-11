@@ -6,9 +6,9 @@ import logging
 import oauth2 as oauth
 import requests
 
+from django.apps import apps
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
-from django.db.models.loading import get_model
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
@@ -21,7 +21,8 @@ from . import conf as settings
 
 
 DEFAULT_TYPE = "MERCHANT"
-Transaction = get_model(settings.PESAPAL_TRANSACTION_MODEL)
+app_name, model_name = settings.PESAPAL_TRANSACTION_MODEL.split('.')
+Transaction = apps.get_model(app_label=app_name, model_name=model_name)
 
 logger = logging.getLogger(__name__)
 
@@ -32,25 +33,35 @@ class PaymentRequestMixin(object):
         token = None
 
         # Default signature method is SignatureMethod_HMAC_SHA1
-        signature_method = getattr(oauth, settings.PESAPAL_OAUTH_SIGNATURE_METHOD)()
+        signature_method = getattr(
+            oauth, settings.PESAPAL_OAUTH_SIGNATURE_METHOD)()
 
-        consumer = oauth.Consumer(settings.PESAPAL_CONSUMER_KEY, settings.PESAPAL_CONSUMER_SECRET)
-        signed_request = oauth.Request.from_consumer_and_token(consumer, http_url=url_to_sign, parameters=params, is_form_encoded=True)
+        consumer = oauth.Consumer(
+            settings.PESAPAL_CONSUMER_KEY, settings.PESAPAL_CONSUMER_SECRET)
+        signed_request = oauth.Request.from_consumer_and_token(
+            consumer, http_url=url_to_sign, parameters=params,
+            is_form_encoded=True)
         signed_request.sign_request(signature_method, consumer, token)
         return signed_request
 
     def build_signed_request(self, payload):
         '''
-        Returns a signed OAuth request. Assumes http protocol if request parameter is not provided.
+        Returns a signed OAuth request. Assumes http protocol if request
+        parameter is not provided.
         Otherwise it tries to figure out the url using the request object.
         '''
 
         if self.request:
-            callback_url = self.request.build_absolute_uri(reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
+            callback_url = self.request.build_absolute_uri(
+                reverse(settings.PESAPAL_OAUTH_CALLBACK_URL)
+            )
         else:
             current_site = Site.objects.get_current()
             protocol = 'http' if settings.PESAPAL_DEMO else 'https'
-            callback_url = '{0}://{1}{2}'.format(protocol, current_site.domain, reverse(settings.PESAPAL_OAUTH_CALLBACK_URL))
+            callback_url = '{0}://{1}{2}'.format(
+                protocol, current_site.domain,
+                reverse(settings.PESAPAL_OAUTH_CALLBACK_URL)
+            )
 
         params = {
             'oauth_callback': callback_url,
@@ -93,7 +104,8 @@ class PaymentRequestMixin(object):
 
     def get_payment_url(self, **kwargs):
         '''
-        Use the computed order information to generate a url for the Pesapal iframe.
+        Use the computed order information to generate a url for the
+        Pesapal iframe.
 
         Params should include the following keys:
             Required params: `amount`, `description`, `reference`, `email`
@@ -111,10 +123,12 @@ class PaymentRequestMixin(object):
     def get_payment_status(self, **kwargs):
 
         '''
-        Query the payment status from pesapal using the `transaction_id` and the `merchant_reference_id`
+        Query the payment status from pesapal using the `transaction_id`
+        and the `merchant_reference_id`
 
         Params should include the following keys:
-            Required params: `pesapal_merchant_reference`, `pesapal_transaction_tracking_id`
+            Required params: `pesapal_merchant_reference`,
+            `pesapal_transaction_tracking_id`
         '''
 
         params = {
@@ -124,13 +138,18 @@ class PaymentRequestMixin(object):
 
         params.update(**kwargs)
 
-        signed_request = self.sign_request(params, settings.PESAPAL_QUERY_STATUS_LINK)
+        signed_request = self.sign_request(
+            params, settings.PESAPAL_QUERY_STATUS_LINK)
 
         url = signed_request.to_url()
 
-        response = requests.get(url, headers={'content-type': 'text/namevalue; charset=utf-8'})
+        response = requests.get(url, headers={
+            'content-type': 'text/namevalue; charset=utf-8'
+        })
         if response.status_code != requests.codes.ok:
-            logger.error('Unable to complete payment status request with error response code {0}'.format(response.status_code))
+            logger.error(
+                'Unable to complete payment status request with'
+                'error response code {0}'.format(response.status_code))
             comm_status = False
         else:
             comm_status = True
@@ -152,10 +171,9 @@ class PaymentResponseMixin(object):
 
     def build_url_params(self):
         url_params = QueryDict('', mutable=True)
-        url_params.update(
-            {
-                'pesapal_merchant_reference': self.transaction.merchant_reference,
-                'pesapal_transaction_tracking_id': self.transaction.pesapal_transaction
+        url_params.update({
+            'pesapal_merchant_reference': self.transaction.merchant_reference,
+            'pesapal_transaction_tracking_id': self.transaction.pesapal_transaction,
             }
         )
         url_params = '?' + url_params.urlencode()
@@ -175,10 +193,12 @@ class PaymentResponseMixin(object):
 class TransactionCompletedView(PaymentResponseMixin, TemplateView):
 
     '''
-    After Pesapal processes the transaction this will save the transaction and then redirect
-    to whatever redirect URL in your settings as `PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL`.
+    After Pesapal processes the transaction this will save the transaction and
+    then redirect to whatever redirect URL in your settings as
+    `PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL`.
 
-    For further processing just create a `post_save` signal on the `Transaction` model.
+    For further processing just create a `post_save` signal on the
+    `Transaction` model.
     '''
 
     template_name = 'django_pesapal/post_payment.html'
@@ -205,17 +225,22 @@ class TransactionCompletedView(PaymentResponseMixin, TemplateView):
         ctx['payment_status'] = self.transaction.payment_status
 
         if self.transaction.payment_status == Transaction.PENDING:
-            message = _('Your payment is being processed. We will notify you once it has completed')
+            message = _(
+                'Your payment is being processed. We will notify you '
+                'once it has completed'
+            )
             ctx['payment_pending'] = True
         else:
             if self.transaction.payment_status == Transaction.COMPLETED:
                 message = mark_safe(
-                    _('''Your payment has been successfully processed.
-                        The page should automatically redirect in <span class='countdown'>3</span> seconds.
-                    ''')
+                    _('Your payment has been successfully processed. '
+                      'The page should automatically redirect in '
+                      '<span class="countdown">3</span> seconds.'
+                      )
                 )
             elif self.transaction.payment_status == Transaction.FAILED:
-                message = _('The processing of your payment failed. Please contact the system administrator.')
+                message = _('The processing of your payment failed. '
+                            'Please contact the system administrator.')
             else:
                 # INVALID
                 message = _('The transaction details provided were invalid.')
@@ -227,8 +252,10 @@ class TransactionCompletedView(PaymentResponseMixin, TemplateView):
 class UpdatePaymentStatusMixin(PaymentRequestMixin):
 
     def get_params(self):
-        self.merchant_reference = self.request.GET.get('pesapal_merchant_reference', 0)
-        self.transaction_id = self.request.GET.get('pesapal_transaction_tracking_id', None)
+        self.merchant_reference = self.request.GET.get(
+            'pesapal_merchant_reference', 0)
+        self.transaction_id = self.request.GET.get(
+            'pesapal_transaction_tracking_id', None)
 
         params = {
             'pesapal_merchant_reference': self.merchant_reference,
@@ -287,7 +314,8 @@ class IPNCallbackView(UpdatePaymentStatusMixin, PaymentResponseMixin, View):
 
     def build_ipn_response(self):
         params = self.get_params()
-        params['pesapal_notification_type'] = self.request.GET.get('pesapal_notification_type')
+        params['pesapal_notification_type'] = self.request.GET.get(
+            'pesapal_notification_type')
 
         query_dict = QueryDict('', mutable=True)
         query_dict.update(params)

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import uuidfield.fields
+import uuid
 
 
 class Migration(migrations.Migration):
@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='Transaction',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('pesapal_transaction', uuidfield.fields.UUIDField(max_length=32)),
+                ('pesapal_transaction', models.UUIDField(default=uuid.uuid4, editable=False)),
                 ('merchant_reference', models.IntegerField(db_index=True)),
                 ('amount', models.DecimalField(default=0, max_digits=10, decimal_places=2)),
                 ('created', models.DateTimeField(auto_now_add=True)),

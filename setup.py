@@ -34,13 +34,9 @@ setup(
     packages=find_packages(exclude=['sandbox*']),
     package_data={'django_pesapal': ['templates/django_pesapal/*.html']},
     install_requires=[
-        'Django>=1.7',
+        'Django>=1.8',
         'oauth2==1.9.0.post1',
-        'django-uuidfield<=0.6.0',
-        'requests[security]==2.8.1',
-    ],
-    dependency_links=[
-        "https://github.com/dcramer/django-uuidfield/archive/9bd27e9.zip#egg=django-uuidfield-0.6.0",
+        'requests[security]==2.12.3',
     ],
     license="BSD",
     zip_safe=False,
