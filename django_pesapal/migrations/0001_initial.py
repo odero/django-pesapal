@@ -7,25 +7,37 @@ import uuid
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Transaction',
+            name="Transaction",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('pesapal_transaction', models.UUIDField(default=uuid.uuid4, editable=False)),
-                ('merchant_reference', models.IntegerField(db_index=True)),
-                ('amount', models.DecimalField(default=0, max_digits=10, decimal_places=2)),
-                ('created', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        verbose_name="ID",
+                        serialize=False,
+                        auto_created=True,
+                        primary_key=True,
+                    ),
+                ),
+                (
+                    "pesapal_transaction",
+                    models.UUIDField(default=uuid.uuid4, editable=False),
+                ),
+                ("merchant_reference", models.IntegerField(db_index=True)),
+                (
+                    "amount",
+                    models.DecimalField(default=0, max_digits=10, decimal_places=2),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
             ],
-            options={
-            },
+            options={},
             bases=(models.Model,),
         ),
         migrations.AlterUniqueTogether(
-            name='transaction',
-            unique_together=set([('merchant_reference', 'pesapal_transaction')]),
+            name="transaction",
+            unique_together=set([("merchant_reference", "pesapal_transaction")]),
         ),
     ]

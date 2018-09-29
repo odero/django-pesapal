@@ -11,7 +11,7 @@ django-pesapal
 .. image:: https://coveralls.io/repos/odero/django-pesapal/badge.png?branch=master
    :target: https://coveralls.io/r/odero/django-pesapal?branch=master
 
-.. image:: https://pypip.in/status/django-pesapal/badge.svg
+.. image:: https://img.shields.io/pypi/status/django-pesapal.svg
    :target: https://pypi.python.org/pypi/django-pesapal/
    :alt: Development Status
 

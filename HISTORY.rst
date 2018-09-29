@@ -2,6 +2,11 @@
 
 History
 -------
+1.3.0 (2018-09-29)
+++++++++++++++++++
+- Support for Django 2.1
+- Support Py36
+
 1.2.0 (2016-12-11)
 ++++++++++++++++++
 - Dropped support for Django 1.7

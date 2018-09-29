@@ -8,18 +8,14 @@ from . import views
 
 urlpatterns = [
     url(
-        r'^transaction/completed/$',
+        r"^transaction/completed/$",
         views.TransactionCompletedView.as_view(),
-        name='transaction_completed'
+        name="transaction_completed",
     ),
     url(
-        r'^transaction/status/$',
+        r"^transaction/status/$",
         views.TransactionStatusView.as_view(),
-        name='transaction_status'
+        name="transaction_status",
     ),
-    url(
-        r'^transaction/ipn/$',
-        views.IPNCallbackView.as_view(),
-        name='transaction_ipn'
-    ),
+    url(r"^transaction/ipn/$", views.IPNCallbackView.as_view(), name="transaction_ipn"),
 ]

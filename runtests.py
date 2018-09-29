@@ -6,15 +6,11 @@ try:
     settings.configure(
         DEBUG=True,
         USE_TZ=True,
-        DATABASES={
-            "default": {
-                "ENGINE": "django.db.backends.sqlite3",
-            }
-        },
+        DATABASES={"default": {"ENGINE": "django.db.backends.sqlite3"}},
         MIDDLEWARE_CLASSES=[
-            'django.contrib.sessions.middleware.SessionMiddleware',
-            'django.contrib.auth.middleware.AuthenticationMiddleware',
-            'django.contrib.messages.middleware.MessageMiddleware',
+            "django.contrib.sessions.middleware.SessionMiddleware",
+            "django.contrib.auth.middleware.AuthenticationMiddleware",
+            "django.contrib.messages.middleware.MessageMiddleware",
         ],
         ROOT_URLCONF="django_pesapal.urls",
         INSTALLED_APPS=[
@@ -24,11 +20,12 @@ try:
             "django_pesapal",
         ],
         SITE_ID=1,
-        NOSE_ARGS=['-s'],
+        NOSE_ARGS=["-s"],
     )
 
     try:
         import django
+
         setup = django.setup
     except AttributeError:
         pass
@@ -42,7 +39,7 @@ except ImportError:
 
 def run_tests(*test_args):
     if not test_args:
-        test_args = ['django_pesapal.tests']
+        test_args = ["django_pesapal.tests"]
 
     # Run tests
     test_runner = NoseTestSuiteRunner()
@@ -53,5 +50,5 @@ def run_tests(*test_args):
         sys.exit(failures)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_tests(*sys.argv[1:])

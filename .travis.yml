@@ -7,6 +7,7 @@ python:
   # - "3.3"  # not compatible with Django 1.9
   - "3.4"
   - "3.5"
+  - "3.6"
 
 # set sudo: false to use new container-based infra on travis-ci.com
 sudo: false
