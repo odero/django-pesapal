@@ -1,4 +1,4 @@
-Django>=1.8,<2.2
-wheel>=0.31.1
+Django>=1.8,<2.3
+wheel>=0.33.4
 oauth2==1.9.0.post1
-requests[security]>=2.19.1,<2.20
+requests[security]>=2.20.0,<2.23.0

@@ -1,13 +1,14 @@
 # Config file for automatic testing at travis-ci.org
 
 language: python
+dist: xenial
 
 python:
   - "2.7"
-  # - "3.3"  # not compatible with Django 1.9
-  - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
+  - "pypy"
 
 # set sudo: false to use new container-based infra on travis-ci.com
 sudo: false
