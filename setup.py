@@ -34,7 +34,7 @@ setup(
     packages=find_packages(exclude=["sandbox*"]),
     package_data={"django_pesapal": ["templates/django_pesapal/*.html"]},
     install_requires=[
-        "Django>=2.3,<3.9",
+        "Django>=2.2,<4",
         "oauth2==1.9.0.post1",
         "requests[security]>=2.20.0,<2.27.1",
     ],
