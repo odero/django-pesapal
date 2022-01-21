@@ -7,7 +7,7 @@ try:
         DEBUG=True,
         USE_TZ=True,
         DATABASES={"default": {"ENGINE": "django.db.backends.sqlite3"}},
-        MIDDLEWARE_CLASSES=[
+        MIDDLEWARE=[
             "django.contrib.sessions.middleware.SessionMiddleware",
             "django.contrib.auth.middleware.AuthenticationMiddleware",
             "django.contrib.messages.middleware.MessageMiddleware",

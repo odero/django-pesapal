@@ -2,6 +2,13 @@
 
 History
 -------
+1.3.2 (2022-01-21)
+++++++++++++++++++
+- Support for Django 3.9
+- Update dependencies
+- Support Py38, Py39
+- Remove EOL py27
+
 1.3.1 (2019-07-16)
 ++++++++++++++++++
 - Update dependencies

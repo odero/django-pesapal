@@ -44,7 +44,7 @@ INSTALLED_APPS = (
 )
 
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -148,3 +148,6 @@ try:
     from local_config import *
 except ImportError:
     pass
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
