@@ -2,6 +2,10 @@
 
 History
 -------
+1.3.3 (2023-01-26)
+++++++++++++++++++
+- Bug fix: Handling invalid data
+
 1.3.2 (2022-01-21)
 ++++++++++++++++++
 - Support for Django 3.9
