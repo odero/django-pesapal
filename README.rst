@@ -54,7 +54,7 @@ Then use it in a project::
 
     from django_pesapal.views import PaymentRequestMixin
 
-    class PaymentView(PaymentRequestMixin):
+    class PaymentView(PaymentRequestMixin, TemplateView):
 
         def get_pesapal_payment_iframe(self):
 

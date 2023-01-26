@@ -160,6 +160,10 @@ class PaymentRequestMixin(object):
         response_data["comm_success"] = comm_status
 
         _, values = response.text.split("=")
+        if values == 'INVALID':
+            response_data["payment_status"] = values
+            return response_data
+
         _, payment_method, status, _ = values.split(",")
         response_data["payment_status"] = status
         response_data["payment_method"] = payment_method
@@ -209,12 +213,14 @@ class TransactionCompletedView(PaymentResponseMixin, TemplateView):
         merchant_reference = request.GET.get("pesapal_merchant_reference", 0)
 
         if transaction_id and merchant_reference:
-            self.transaction, created = Transaction.objects.get_or_create(
+            self.transaction, _ = Transaction.objects.get_or_create(
                 merchant_reference=merchant_reference,
                 pesapal_transaction=transaction_id,
             )
 
-        return super(TransactionCompletedView, self).get(request, *args, **kwargs)
+            return super(TransactionCompletedView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponse("Invalid request: Missing data", status=400)
 
     def get_context_data(self, **kwargs):
 
