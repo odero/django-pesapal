@@ -277,8 +277,9 @@ class UpdatePaymentStatusMixin(PaymentRequestMixin):
         # check status from pesapal server
         response = self.get_transaction_status()
 
-        self.transaction.payment_method = response["payment_method"]
-        self.transaction.payment_account = response["payment_account"]
+        self.transaction.payment_method = dict.get(response, "payment_method", "")
+        self.transaction.payment_account = dict.get(response, "payment_account", "")
+        self.transaction.amount = dict.get(response, "amount", 0)
 
         if response["status_code"] == 1:  # completed
             self.transaction.payment_status = Transaction.COMPLETED

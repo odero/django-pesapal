@@ -18,6 +18,7 @@ try:
             "django.contrib.contenttypes",
             "django.contrib.sites",
             "django_pesapal",
+            "django_pesapalv3",
         ],
         SITE_ID=1,
         NOSE_ARGS=["-s"],
@@ -39,7 +40,7 @@ except ImportError:
 
 def run_tests(*test_args):
     if not test_args:
-        test_args = ["django_pesapal.tests"]
+        test_args = ["django_pesapal.tests", "django_pesapal3.tests"]
 
     # Run tests
     test_runner = NoseTestSuiteRunner()

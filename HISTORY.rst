@@ -2,6 +2,15 @@
 
 History
 -------
+2.0 (2024-12-27)
+++++++++++++++++++
+- Support for Django 5.1
+- Update dependencies
+- Support Py310, Py311
+- Add support for pesapal v3 API
+- Breaking change - Update Transaction model - change merchant_reference field from int to string
+- Add payment_account field to Transaction model
+
 1.3.3 (2023-01-26)
 ++++++++++++++++++
 - Bug fix: Handling invalid data
