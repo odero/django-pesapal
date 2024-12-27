@@ -8,7 +8,7 @@ from django.http import HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import View, RedirectView, TemplateView
 
 from django_pesapal.models import Transaction

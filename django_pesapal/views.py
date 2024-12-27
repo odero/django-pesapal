@@ -15,7 +15,7 @@ except ModuleNotFoundError:
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import View, RedirectView, TemplateView
 
 from xml.etree import cElementTree as ET
