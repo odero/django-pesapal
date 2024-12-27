@@ -43,4 +43,5 @@ output/*/index.html
 docs/_build
 
 # test db
-db.sqlite3
+db.sqlite3*
+
