@@ -313,3 +313,21 @@ class TransactionStatusView(UpdatePaymentStatusMixin, RedirectView):
         url += "?" + query_dict.urlencode()
 
         return url
+
+
+class IPNCallbackView(UpdatePaymentStatusMixin, PaymentResponseMixin, View):
+    def build_ipn_response(self):
+        params = self.get_params()
+        params["pesapal_notification_type"] = self.request.GET.get(
+            "pesapal_notification_type"
+        )
+
+        query_dict = QueryDict("", mutable=True)
+        query_dict.update(params)
+        response = query_dict.urlencode()
+        return HttpResponse(response)
+
+    def get(self, *args, **kwargs):
+        self.process_payment_status()
+        response = self.build_ipn_response()
+        return response

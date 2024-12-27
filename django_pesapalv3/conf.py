@@ -40,7 +40,7 @@ if settings.configured:
     PESAPAL_GET_IPNS_URL = getattr(
         settings, "PESAPAL_GET_IPNS_URL", f"{PESAPAL_ENDPOINT}/URLSetup/GetIpnList"
     )
-    PESAPAL_IPN_URL = getattr(settings, "PESAPAL_IPN_URL", "transaction_ipn")
+    PESAPAL_IPN_URL = getattr(settings, "PESAPAL_IPN_URL", "django_pesapalv3:transaction_ipn")
 
     PESAPAL_CONSUMER_KEY = getattr(settings, "PESAPAL_CONSUMER_KEY")
     PESAPAL_CONSUMER_SECRET = getattr(settings, "PESAPAL_CONSUMER_SECRET")

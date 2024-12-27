@@ -31,18 +31,20 @@ Install django-pesapal::
 
 Then use it in a project::
 
-    import django_pesapal
+    import django_pesapalv3
 
-#. Add `django_pesapal` to your `INSTALLED_APPS` setting like this::
+#. Add `django_pesapalv3` to your `INSTALLED_APPS` setting like this::
 
     INSTALLED_APPS = (
         ...
-        'django_pesapal',
+        'django_pesapalv3',  # use this if using v3 api
+        # 'django_pesapal',   # use this if using v1/classic api
     )
 
 #. Include the `django_pesapal` URLconf in your project urls.py like this::
 
-    url(r'^payments/', include('django_pesapal.urls')),
+    url(r"^v3/payments", include("django_pesapalv3.urls")),
+    # url(r'^payments/', include('django_pesapal.urls')),  # use this if using v1/classic api
 
 #. You can set your own return url by adding this to `settings.py`::
 
@@ -51,6 +53,38 @@ Then use it in a project::
 #. Run `python manage.py migrate` to create the models.
 
 #. Create a method that receives payment details and returns the pesapal iframe url::
+
+    from django_pesapalv3.views import PaymentRequestMixin
+
+    class PaymentView(PaymentRequestMixin, TemplateView):
+
+        def get_pesapal_payment_iframe(self):
+
+            '''
+            Authenticates with pesapal to get the payment iframe src
+            '''
+            ipn = self.get_default_ipn()  # you can replace this with your own ipn registration method
+
+            order_info = {
+                "id": self.request.GET.get("id", uuid.uuid4().hex),  # replace this with a valid merchant id
+                "currency": "KES",
+                "amount": 10,
+                "description": "Payment for X",
+                "callback_url": self.build_url(
+                    reverse("django_pesapalv3:transaction_completed")
+                ),
+                "notification_id": ipn,
+                "billing_address": {
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "email": "pesapal@example.com",
+                },
+            }
+            req = self.submit_order_request(**order_info)
+            iframe_src_url = req["redirect_url"]
+            return iframe_src_url
+
+#. In case you are using v1/classic api, use this instead::
 
     from django_pesapal.views import PaymentRequestMixin
 
@@ -73,7 +107,7 @@ Then use it in a project::
             iframe_src_url = self.get_payment_url(**order_info)
             return iframe_src_url
 
-#. Once payment has been processed, you will be redirected to an intermediate screen where the user can finish ordering. Clicking the "Finish Ordering" button will check the payment status to ensure that the payment was successful and then redirects the user to `PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL`.
+#. Once payment has been processed, you will be redirected to an intermediate screen where the user can finish ordering. Clicking the "Check status" button will check the payment status to ensure that the payment was successful and then redirects the user to `PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL`.
 
 
 Configuration
@@ -88,23 +122,19 @@ Configuration
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_CONSUMER_SECRET                     | ''                                                     |
 +---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_IFRAME_LINK (if PESAPAL_DEMO=True)  | 'http://demo.pesapal.com/api/PostPesapalDirectOrderV4' |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_IFRAME_LINK (if PESAPAL_DEMO=False) | 'https://www.pesapal.com/api/PostPesapalDirectOrderV4' |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_QUERY_STATUS_LINK (Demo Mode=True)  | 'http://demo.pesapal.com/API/QueryPaymentDetails'      |
-+---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_QUERY_STATUS_LINK (Demo Mode=False) | 'https://www.pesapal.com/API/QueryPaymentDetails'      |
-+---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_OAUTH_CALLBACK_URL                  | 'transaction_completed'                                |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_OAUTH_SIGNATURE_METHOD              | 'SignatureMethod_HMAC_SHA1'                            |
 +---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL    | '/'                                                    |
+| PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL    | '/' or '/v3/'                                          |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_TRANSACTION_FAILED_REDIRECT_URL     | ''                                                     |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_REDIRECT_WITH_REFERENCE             | True                                                   |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_TRANSACTION_MODEL                   | 'django_pesapal.Transaction'                           |
++---------------------------------------------+--------------------------------------------------------+
+| PESAPAL_IPN_URL (for v3)                    | 'django_pesapalv3:transaction_ipn'                     |
++---------------------------------------------+--------------------------------------------------------+
+| PESAPAL_CALLBACK_URL (for v3)               | 'django_pesapalv3:transaction_completed'               |
 +---------------------------------------------+--------------------------------------------------------+
