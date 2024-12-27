@@ -41,6 +41,8 @@ INSTALLED_APPS = (
     "django.contrib.staticfiles",
     "testapp",
     "django_pesapal",
+    "django_pesapalv3",
+    "debug_toolbar",
 )
 
 
@@ -51,6 +53,7 @@ MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 )
 
 ROOT_URLCONF = "sandbox.urls"
@@ -126,22 +129,23 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {"console": {"level": "DEBUG", "class": "logging.StreamHandler"}},
     "loggers": {
-        "django_pesapal": {"handlers": ["console"], "level": "DEBUG", "propagate": True}
+        "django_pesapal": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
+        "django_pesapalv3": {"handlers": ["console"], "level": "DEBUG", "propagate": True},
     },
 }
 
 PESAPAL_DEMO = True
 PESAPAL_OAUTH_CALLBACK_URL = "transaction_completed"
 PESAPAL_OAUTH_SIGNATURE_METHOD = "SignatureMethod_HMAC_SHA1"
-PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = "payment"
-PESAPAL_DEMO = True
-PESAPAL_OAUTH_CALLBACK_URL = "transaction_completed"
-PESAPAL_OAUTH_SIGNATURE_METHOD = "SignatureMethod_HMAC_SHA1"
+PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = "paymentv3"
 PESAPAL_TRANSACTION_FAILED_REDIRECT_URL = ""
 PESAPAL_ITEM_DESCRIPTION = False
 PESAPAL_TRANSACTION_MODEL = "django_pesapal.Transaction"
 PESAPAL_CONSUMER_KEY = "INSERT_YOUR_KEY"
-PESAPAL_CONSUMER_SECRET = "INSERT_YOUR_SECRET"
+PESAPAL_CONSUMER_SECRET = "7JDPmAvcnIGN7E4KJeB1c8M8e2s="
+
+PESAPAL_IPN_NOTIFICATION_TYPE = "GET"
+PESAPAL_IPN_URL = "django_pesapalv3:transaction_ipn"
 # Override pesapal keys
 
 try:

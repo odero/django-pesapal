@@ -9,7 +9,6 @@ PESAPAL_PROD_ENDPOINT = " https://pay.pesapal.com/v3/api"
 
 
 if settings.configured:
-    print("##### Settings v3 configured")
     PESAPAL_DEMO = getattr(settings, "PESAPAL_DEMO", True)
     PESAPAL_ENDPOINT = PESAPAL_DEMO_ENDPOINT if PESAPAL_DEMO else PESAPAL_PROD_ENDPOINT
 
@@ -47,11 +46,11 @@ if settings.configured:
     PESAPAL_CONSUMER_SECRET = getattr(settings, "PESAPAL_CONSUMER_SECRET")
 
     PESAPAL_CALLBACK_URL = getattr(
-        settings, "PESAPAL_CALLBACK_URL", "transaction_completed"
+        settings, "PESAPAL_CALLBACK_URL", "django_pesapalv3:transaction_completed"
     )
 
     PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL = getattr(
-        settings, "PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL", "/"
+        settings, "PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL", "/v3/"
     )
 
     PESAPAL_TRANSACTION_FAILED_REDIRECT_URL = getattr(

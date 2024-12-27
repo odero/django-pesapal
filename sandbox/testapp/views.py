@@ -1,3 +1,4 @@
+import uuid
 from django.conf import settings
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -40,19 +41,18 @@ class PaymentViewV3(TemplateView, PaymentRequestMixinV3):
         ipn = self.get_default_ipn()
 
         order_info = {
-            "id": "DJP-APP-1234",
+            "id": self.request.GET.get("id", uuid.uuid4().hex),
             "currency": "KES",
             "amount": 10,
             "description": "Payment for X",
             "callback_url": self.build_url(
-                reverse(settings.PESAPAL_OAUTH_CALLBACK_URL)
+                reverse("django_pesapalv3:transaction_completed")
             ),
             "notification_id": ipn,
             "billing_address": {
                 "first_name": "John",
                 "last_name": "Doe",
                 "email": "pesapal@example.com",
-                "phone_number": "254712345678",
             },
         }
         req = self.submit_order_request(**order_info)

@@ -13,5 +13,6 @@ urlpatterns = [
     url(r"^$", PaymentView.as_view(), name="payment"),
     url(r"^v3/$", PaymentViewV3.as_view(), name="paymentv3"),
     url(r"^", include("django_pesapal.urls")),
+    url(r"^v3/", include("django_pesapalv3.urls", namespace="django_pesapalv3")),
     url(r"^__debug__/", include(debug_toolbar_urls)),
 ]
