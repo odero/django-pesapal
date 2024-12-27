@@ -37,14 +37,15 @@ Then use it in a project::
 
     INSTALLED_APPS = (
         ...
-        'django_pesapalv3',  # use this if using v3 api
-        # 'django_pesapal',   # use this if using v1/classic api
+        'django.contrib.sites',  # always add - needed by the app
+        'django_pesapal',   # always add
+        'django_pesapalv3',  # add this if using v3 api
     )
 
 #. Include the `django_pesapal` URLconf in your project urls.py like this::
 
-    url(r"^v3/payments", include("django_pesapalv3.urls")),
-    # url(r'^payments/', include('django_pesapal.urls')),  # use this if using v1/classic api
+    path('payments/v3/', include('django_pesapalv3.urls')),
+    # path('payments/', include('django_pesapal.urls')),  # use this if using v1/classic api
 
 #. You can set your own return url by adding this to `settings.py`::
 
@@ -57,9 +58,14 @@ Then use it in a project::
     from django_pesapalv3.views import PaymentRequestMixin
 
     class PaymentView(PaymentRequestMixin, TemplateView):
+        template_name = "django_pesapal/payment.html" # you can replace with your own template
+
+        def get_context_data(self, **kwargs):
+            ctx = super(PaymentView, self).get_context_data(**kwargs)
+            ctx["pesapal_url"] = self.get_pesapal_payment_iframe()
+            return ctx
 
         def get_pesapal_payment_iframe(self):
-
             '''
             Authenticates with pesapal to get the payment iframe src
             '''
@@ -81,8 +87,7 @@ Then use it in a project::
                 },
             }
             req = self.submit_order_request(**order_info)
-            iframe_src_url = req["redirect_url"]
-            return iframe_src_url
+            return req["redirect_url"]
 
 #. In case you are using v1/classic api, use this instead::
 
@@ -91,7 +96,6 @@ Then use it in a project::
     class PaymentView(PaymentRequestMixin, TemplateView):
 
         def get_pesapal_payment_iframe(self):
-
             '''
             Authenticates with pesapal to get the payment iframe src
             '''
@@ -104,8 +108,7 @@ Then use it in a project::
                 'email': 'user@example.com',
             }
 
-            iframe_src_url = self.get_payment_url(**order_info)
-            return iframe_src_url
+            return self.get_payment_url(**order_info)
 
 #. Once payment has been processed, you will be redirected to an intermediate screen where the user can finish ordering. Clicking the "Check status" button will check the payment status to ensure that the payment was successful and then redirects the user to `PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL`.
 
@@ -126,9 +129,9 @@ Configuration
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_OAUTH_SIGNATURE_METHOD              | 'SignatureMethod_HMAC_SHA1'                            |
 +---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL    | '/' or '/v3/'                                          |
+| PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL    | '<app:reversible_url>'                                 |
 +---------------------------------------------+--------------------------------------------------------+
-| PESAPAL_TRANSACTION_FAILED_REDIRECT_URL     | ''                                                     |
+| PESAPAL_TRANSACTION_FAILED_REDIRECT_URL     | PESAPAL_TRANSACTION_DEFAULT_REDIRECT_URL               |
 +---------------------------------------------+--------------------------------------------------------+
 | PESAPAL_REDIRECT_WITH_REFERENCE             | True                                                   |
 +---------------------------------------------+--------------------------------------------------------+
